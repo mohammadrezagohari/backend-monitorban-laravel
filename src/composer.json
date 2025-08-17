@@ -11,6 +11,8 @@
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "nwidart/laravel-modules": "^12.0",
+        "predis/predis": "^3.2",
+        "spatie/laravel-data": "^4.17",
         "spatie/laravel-permission": "^6.21",
         "tymon/jwt-auth": "^2.2"
     },
@@ -33,7 +35,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "tests/",
+            "Modules\\": "Modules/"
         }
     },
     "scripts": {

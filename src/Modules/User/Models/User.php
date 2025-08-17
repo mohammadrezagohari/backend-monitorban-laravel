@@ -9,7 +9,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasRoles;
+    use HasRoles , HasGroups;
 
     protected $fillable = ['first_name', 'last_name', 'username', 'email', 'password', 'mobile'];
 
@@ -22,4 +22,17 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+
+    public function roles()
+    {
+        return $this->belongsToMany(\Modules\Role\Models\Role::class);
+    }
+
+
+    public function groups()
+    {
+        return $this->morphToMany(Group::class, 'model', 'model_has_groups', 'model_id', 'group_id');
+    }
+
 }

@@ -1,25 +1,43 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Auth",
+        "title": "Authentication",
+        "description": "Endpoints for user authentication",
         "version": "1.0.0"
     },
     "paths": {
-        "/api/register": {
+        "/api/auth/register": {
             "post": {
-                "summary": "Register an account",
-                "operationId": "c36222d2fd4ed2e0193f507911aef02f",
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user account",
+                "operationId": "55e2aa3e4318719bd4f66f225e1e159c",
                 "requestBody": {
+                    "description": "User registration details",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "username",
+                                    "email",
+                                    "password"
+                                ],
                                 "properties": {
-                                    "mobile": {
-                                        "type": "string"
+                                    "username": {
+                                        "type": "string",
+                                        "example": "gohari"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john.doe@example.com"
                                     },
                                     "password": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
                                     }
                                 },
                                 "type": "object"
@@ -28,29 +46,174 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "Success"
+                    "201": {
+                        "description": "Registration successful"
                     },
-                    "401": {
-                        "description": "Unauthorized"
+                    "422": {
+                        "description": "Validation error"
                     }
                 }
             }
         },
-        "/api/login": {
+        "/api/auth/login": {
             "post": {
-                "summary": "login an account",
-                "operationId": "78ae11d3a9ef5f4777b1d51d4f854d4e",
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Log in an existing user",
+                "operationId": "9a5569c3c44cd4e2c43d104510928399",
                 "requestBody": {
+                    "description": "User login credentials",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "username",
+                                    "password"
+                                ],
                                 "properties": {
-                                    "mobile": {
-                                        "type": "string"
+                                    "username": {
+                                        "type": "string",
+                                        "example": "gohari"
                                     },
                                     "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/UserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/api/auth/verify-otp": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Verify the one-time password (OTP)",
+                "operationId": "99d7dc7005c535c78545e5fcf84d7289",
+                "requestBody": {
+                    "description": "Verify OTP for authentication",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "mobile",
+                                    "otp"
+                                ],
+                                "properties": {
+                                    "mobile": {
+                                        "type": "string",
+                                        "example": "09123456789"
+                                    },
+                                    "otp": {
+                                        "type": "integer",
+                                        "example": 123456
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP verified successfully"
+                    },
+                    "400": {
+                        "description": "Invalid or expired OTP"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/api/auth/request-otp": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Request a one-time password (OTP)",
+                "operationId": "3633b93c46b71423ff3dc6ac41ebb837",
+                "requestBody": {
+                    "description": "Request OTP for authentication",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "mobile"
+                                ],
+                                "properties": {
+                                    "mobile": {
+                                        "type": "string",
+                                        "example": "09371801145"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP generated successfully"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/api/auth/refresh-token": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Refresh the access token using a refresh token",
+                "operationId": "c5f9576575f65627e1f0c2ee15d8febb",
+                "requestBody": {
+                    "description": "Refresh token details",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "refresh_token"
+                                ],
+                                "properties": {
+                                    "refresh_token": {
+                                        "description": "The refresh token used to obtain a new access token.",
                                         "type": "string"
                                     }
                                 },
@@ -61,13 +224,77 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "New access token generated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "bearer"
+                                        },
+                                        "expires_in": {
+                                            "description": "Time in seconds until the token expires",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
-                    "401": {
-                        "description": "Unauthorized"
+                    "400": {
+                        "description": "Invalid or expired refresh token"
+                    },
+                    "404": {
+                        "description": "User not found"
                     }
                 }
             }
         }
-    }
+    },
+    "components": {
+        "schemas": {
+            "UserResource": {
+                "title": "User Resource",
+                "description": "Basic user data",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "john.doe@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "password123"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2023-01-01T00:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "example": "2023-01-01T00:00:00Z"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Endpoints for user authentication"
+        }
+    ]
 }

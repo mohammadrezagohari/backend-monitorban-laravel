@@ -16,7 +16,7 @@ return [
             ],
             'paths' => [
                 'docs' => storage_path('api-docs'),
-                'annotations' => base_path('Modules'), // اسکن کل ماژول‌ها
+                'annotations' => [base_path('Modules'), base_path('app'),], // اسکن کل ماژول‌ها
                 /*
                  * Edit to include full URL in ui for assets
                  */

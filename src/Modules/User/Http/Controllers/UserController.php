@@ -4,53 +4,164 @@ namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\User\Models\User;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(
+    name: "Users",
+    description: "API Endpoints for managing users"
+)]
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    #[OA\Get(
+        path: "/api/users",
+        tags: ["Users"],
+        summary: "Get list of users",
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Successful operation"
+            )
+        ]
+    )]
     public function index()
     {
-        return view('user::index');
+        $users = User::all();
+        return response()->json($users);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    #[OA\Post(
+        path: "/api/users",
+        tags: ["Users"],
+        summary: "Create a new user",
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ["name", "email", "password"],
+                properties: [
+                    new OA\Property(property: "name", type: "string"),
+                    new OA\Property(property: "email", type: "string"),
+                    new OA\Property(property: "password", type: "string")
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: "User created successfully"
+            )
+        ]
+    )]
+    public function store(Request $request)
     {
-        return view('user::create');
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
+        ]);
+
+        return response()->json($user, 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {}
-
-    /**
-     * Show the specified resource.
-     */
+    #[OA\Get(
+        path: "/api/users/{id}",
+        tags: ["Users"],
+        summary: "Get a user by ID",
+        parameters: [
+            new OA\Parameter(
+                name: "id",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Successful operation"
+            )
+        ]
+    )]
     public function show($id)
     {
-        return view('user::show');
+        $user = User::findOrFail($id);
+        return response()->json($user);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    #[OA\Put(
+        path: "/api/users/{id}",
+        tags: ["Users"],
+        summary: "Update a user",
+        parameters: [
+            new OA\Parameter(
+                name: "id",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: "name", type: "string"),
+                    new OA\Property(property: "email", type: "string"),
+                    new OA\Property(property: "password", type: "string")
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "User updated successfully"
+            )
+        ]
+    )]
+    public function update(Request $request, $id)
     {
-        return view('user::edit');
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|string|email|max:255|unique:users,email,' . $id,
+            'password' => 'sometimes|string|min:8',
+        ]);
+
+        $user->update($validated);
+
+        return response()->json($user);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
+    #[OA\Delete(
+        path: "/api/users/{id}",
+        tags: ["Users"],
+        summary: "Delete a user",
+        parameters: [
+            new OA\Parameter(
+                name: "id",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 204,
+                description: "User deleted successfully"
+            )
+        ]
+    )]
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
+        return response()->json(null, 204);
+    }
 }
