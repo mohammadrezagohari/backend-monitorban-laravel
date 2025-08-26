@@ -31,5 +31,19 @@ jobs:
     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
       env:
         DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
+        DB_DATABASE: database/database.sqlite  
+    - name: Run Laravel Tests
       run: php artisan test
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ 62.3.14.123 }}
+        username: ${{ root }}
+        key: ${{ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDRddyG4J1Jaw2peHNykJDLwllDCU+7zvWgx5z1Vt9cguKzC73YQBnUoZJ+pmgwZLyExQOeZ5Dv6fRPTXomQkCVCN8nQf4tbC4wk9IFRW3kjPdt++zKduoYW72sfiN7jfO74Mpz8kLrHpYmiF1DUr4riLaSickALoo2ntd4gyJtCwLkSASMG9qqBltBDGs9AluibybLyAxMQThQauXEQlH1XDPmWUK5qOadBCLB7VFqBAS9/MSqvB3vZD9qs49BxNrgT7lXDDAL825D4BOrYuJDiCpwIXbJxZrhO11wFXreMEbCdcPZAQfBCgENy5laMo+rzUM1qn/vBUlHH/JXpWQek6bwAXuiW1GFyQJv6n5T5YTz49M0+NUnYXKwYzJrFIVay337qLppnebdXPK0M4XayiDO+jFRJlUL6MjRoPFxoxFfuMeXhPbc0fXmnN2xjlBRu4ErCrkpCUGlyvqre5EmJPMgtv7xL+k8KnLXCAqtt3vTY8gqJdROQW2DnAn9ysysR7iopAd+I0L2rDa8P1EecxjiWqeYYOOHxlCuwx76ZwDUstpnCh5MgUMARYmnGZS0jWTeRkyXcUqK62vt/6u53Edpn3dsvouDt/03v+CWC8kzXRljBTWoo0cb9c7N+YCYpSC+rOO/ARk4Jh9lB6W7yUpg2lrlW1Y8aSYaUB284Q== root@TG-31847 }}
+        script: |
+          cd /var/www/backend-monitorban-laravel
+          git pull origin main
+          composer install --no-dev --optimize-autoloader
+          php artisan migrate --force
+          php artisan config:clear
+          php artisan cache:clear
