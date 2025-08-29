@@ -7,8 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Modules\User\DTO\UserDTO;
+use Modules\User\DTO\Login\LoginValidationDTO;
+use Modules\User\DTO\UserValidationDTO;
 use Modules\User\Models\User;
+use Modules\User\SwaggerDTO\Login\LoginRequestDTO;
+use Modules\User\SwaggerDTO\User\UserRequestDTO;
+use Modules\User\SwaggerDTO\User\UserResponseDTO;
 use OpenApi\Attributes as OA;
 use Str;
 use Symfony\Component\HttpFoundation\Response as HTTPResponse;
@@ -25,86 +29,51 @@ use Illuminate\Support\Facades\Cache;
 )]
 class AuthController extends Controller
 {
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
+
     #[OA\Post(
         path: "/api/auth/register",
         summary: "Register a new user account",
         tags: ["Authentication"],
         requestBody: new OA\RequestBody(
             required: true,
-            description: "User registration details",
-            content: new OA\JsonContent(
-                required: ["username", "email", "password"],
-                properties: [
-                    new OA\Property(property: "username", type: "string", example: "gohari"),
-                    new OA\Property(property: "email", type: "string", format: "email", example: "john.doe@example.com"),
-                    new OA\Property(property: "password", type: "string", format: "password", example: "password123"),
-                ]
-            )
+            description: "User registration payload",
+            content: new OA\JsonContent(ref: UserRequestDTO::class),
         ),
         responses: [
-            new OA\Response(response: HTTPResponse::HTTP_CREATED, description: "Registration successful"),
-            new OA\Response(response: HTTPResponse::HTTP_UNPROCESSABLE_ENTITY, description: "Validation error"),
+            new OA\Response(response: 201, description: "Registration successful"),
+            new OA\Response(response: 422, description: "Validation error")
         ]
     )]
     public function register(Request $request)
     {
-        $request->validate([
-            'usernam' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
+        $userDTO = UserValidationDTO::validateAndCreate($request);
 
-        $user = User::create([
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        $user = $userDTO->toModel();
+        $user->save();
 
-        $user->assignRole('user'); // نقش پیش‌فرض
+        $user->assignRole(['user']); // نقش پیش‌فرض
 
-        return response()->json(['message' => 'ثبت‌نام موفق بود'], HTTPResponse::HTTP_CREATED);
+        return response()->json(['message' => 'ثبت‌ نام موفق بود'], HTTPResponse::HTTP_CREATED);
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
-    #[OA\Post(
-        path: "/api/auth/login",
-        summary: "Log in an existing user",
-        tags: ["Authentication"],
-        requestBody: new OA\RequestBody(
-            required: true,
-            description: "User login credentials",
-            content: new OA\JsonContent(
-                required: ["username", "password"],
-                properties: [
-                    new OA\Property(property: "username", type: "string", example: "gohari"),
-                    new OA\Property(property: "password", type: "string", format: "password", example: "password123"),
-                ]
-            )
-        ),
-        responses: [
-            new OA\Response(
-                response: 200,
-                description: "Login successful",
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: "token", type: "string"),
-                        new OA\Property(property: "user", ref: UserDTO::class),
-                    ]
-                )
-            ),
-            new OA\Response(response: 401, description: "Invalid credentials"),
-        ]
+    #[OA\Response(
+        response: 200,
+        description: "Login successful",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "token", type: "string"),
+                new OA\Property(property: "user", ref: LoginRequestDTO::class),
+            ]
+        )
     )]
     public function login(Request $request)
     {
-        $credentials = $request->only('username', 'password');
+        $loginDTO = LoginValidationDTO::validateAndCreate($request);
+
+        $credentials = [
+            'mobile' => $loginDTO->mobile,
+            'password' => $loginDTO->password,
+        ];
 
         if (!$token = Auth::guard('api')->attempt($credentials)) {
             return response()->json(['error' => 'اطلاعات وارد شده صحیح نیست'], 401);
@@ -112,7 +81,7 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token,
-            'user' => Auth::guard('api')->user()
+            'user' => UserResponseDTO::from(Auth::guard('api')->user())
         ], HTTPResponse::HTTP_OK);
     }
 
@@ -141,6 +110,7 @@ class AuthController extends Controller
             new OA\Response(response: 404, description: "User not found"),
         ]
     )]
+
     public function verifyOtp(Request $request)
     {
         $validated = $request->validate([
@@ -249,6 +219,7 @@ class AuthController extends Controller
             new OA\Response(response: 404, description: "User not found"),
         ]
     )]
+
     public function refreshToken(Request $request)
     {
         $validated = $request->validate([

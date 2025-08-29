@@ -3,8 +3,8 @@
 namespace Modules\User\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Modules\Role\DTO\RoleDTO;
-use Modules\Role\Models\Role;
+use Modules\User\DTO\RoleDTO;
+use Modules\User\Models\Role;
 
 class RoleSeeder extends Seeder
 {

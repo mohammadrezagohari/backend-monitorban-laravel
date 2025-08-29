@@ -14,33 +14,12 @@
                 "summary": "Register a new user account",
                 "operationId": "55e2aa3e4318719bd4f66f225e1e159c",
                 "requestBody": {
-                    "description": "User registration details",
+                    "description": "User registration payload",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "username",
-                                    "email",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "username": {
-                                        "type": "string",
-                                        "example": "gohari"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "example": "john.doe@example.com"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "password123"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/UserRequestDTO"
                             }
                         }
                     }
@@ -51,64 +30,6 @@
                     },
                     "422": {
                         "description": "Validation error"
-                    }
-                }
-            }
-        },
-        "/api/auth/login": {
-            "post": {
-                "tags": [
-                    "Authentication"
-                ],
-                "summary": "Log in an existing user",
-                "operationId": "9a5569c3c44cd4e2c43d104510928399",
-                "requestBody": {
-                    "description": "User login credentials",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "username",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "username": {
-                                        "type": "string",
-                                        "example": "gohari"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "password123"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Login successful",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "token": {
-                                            "type": "string"
-                                        },
-                                        "user": {
-                                            "$ref": "#/components/schemas/UserResource"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid credentials"
                     }
                 }
             }
@@ -254,40 +175,310 @@
                     }
                 }
             }
+        },
+        "/api/roles": {
+            "post": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Create a new role",
+                "operationId": "6630954b73937152b182c1cd4ca23bac",
+                "requestBody": {
+                    "description": "Role creation payload",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RoleRequestDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Role created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get list of users",
+                "operationId": "c023197cbd3afbb49a16608b32149155",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create a new user",
+                "operationId": "a713eb4fbc229fa416316c3b5e1a2d57",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get a user by ID",
+                "operationId": "bbd5c5451c829ba945101fd2377a5e8f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update a user",
+                "operationId": "d1d9e4576ed100a0d5fcfc0a7f325110",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Delete a user",
+                "operationId": "9ecb16761c51c12752d64afe39906540",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "User deleted successfully"
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
-            "UserResource": {
-                "title": "User Resource",
-                "description": "Basic user data",
+            "LoginRequestDTO": {
+                "properties": {
+                    "mobile": {
+                        "type": "string",
+                        "example": "09123456789"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "RoleRequestDTO": {
+                "description": "Payload for creating or updating a Role",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "admin"
+                    },
+                    "guard_name": {
+                        "type": "string",
+                        "example": "web"
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "example": [
+                            1,
+                            2
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "UserRequestDTO": {
+                "properties": {
+                    "first_name": {
+                        "type": "string",
+                        "example": "محمدرضا"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "گوهری"
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "gohari"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "example@gandom.link"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "password123"
+                    },
+                    "mobile": {
+                        "type": "string",
+                        "example": "09123456789"
+                    }
+                },
+                "type": "object"
+            },
+            "UserResponseDTO": {
                 "properties": {
                     "id": {
                         "type": "integer",
                         "example": 1
                     },
-                    "name": {
+                    "first_name": {
                         "type": "string",
-                        "example": "John Doe"
+                        "example": "محمدرضا"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "گوهری"
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "gohari"
                     },
                     "email": {
                         "type": "string",
-                        "example": "john.doe@example.com"
+                        "format": "email",
+                        "example": "example@gandom.link"
                     },
-                    "password": {
+                    "mobile": {
                         "type": "string",
-                        "example": "password123"
+                        "example": "09123456789"
                     },
                     "created_at": {
                         "type": "string",
-                        "example": "2023-01-01T00:00:00Z"
+                        "format": "date-time",
+                        "example": "2025-08-27 21:42:00"
                     },
                     "updated_at": {
                         "type": "string",
-                        "example": "2023-01-01T00:00:00Z"
+                        "format": "date-time",
+                        "example": "2025-08-27 21:42:00"
                     }
                 },
                 "type": "object"
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Login successful",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "token": {
+                                    "type": "string"
+                                },
+                                "user": {
+                                    "$ref": "#/components/schemas/LoginRequestDTO"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
             }
         }
     },
@@ -295,6 +486,14 @@
         {
             "name": "Authentication",
             "description": "Endpoints for user authentication"
+        },
+        {
+            "name": "Users",
+            "description": "API Endpoints for managing users"
+        },
+        {
+            "name": "Roles",
+            "description": "Roles"
         }
     ]
 }

@@ -16,7 +16,10 @@ return [
             ],
             'paths' => [
                 'docs' => storage_path('api-docs'),
-                'annotations' => [base_path('Modules'), base_path('app'),], // اسکن کل ماژول‌ها
+                 /*
+                 * Absolute paths to directory containing the swagger annotations are stored.
+                 */
+                'annotations' => [base_path('Modules/*/Http'),base_path('Modules/*/SwaggerDTO'), base_path('app'),], // اسکن کل ماژول‌ها
                 /*
                  * Edit to include full URL in ui for assets
                  */
