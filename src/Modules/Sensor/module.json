@@ -1,0 +1,11 @@
+{
+    "name": "Sensor",
+    "alias": "sensor",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Sensor\\app\\Providers\\SensorServiceProvider"
+    ],
+    "files": []
+}

@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/sensor",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Sensor\\": "app/",
+            "Modules\\Sensor\\Database\\Factories\\": "database/factories/",
+            "Modules\\Sensor\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Sensor\\Tests\\": "tests/"
+        }
+    }
+}

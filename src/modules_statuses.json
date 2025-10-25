@@ -1,3 +1,5 @@
 {
-    "User": true
+    "User": true,
+    "Sensor": true,
+    "Room": true
 }

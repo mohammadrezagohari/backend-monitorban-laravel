@@ -1,6 +1,6 @@
 <?php
 
-namespace $NAMESPACE$;
+namespace Modules\$NAMESPACE$;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;

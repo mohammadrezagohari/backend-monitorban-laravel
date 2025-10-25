@@ -1,6 +1,6 @@
 <?php
 
-namespace $CLASS_NAMESPACE$;
+namespace Modules\$CLASS_NAMESPACE$;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
