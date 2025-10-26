@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Role\DTO;
+namespace Modules\User\DTO;
 
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Attributes\Validation\Rule;

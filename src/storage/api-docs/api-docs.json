@@ -99,7 +99,7 @@
                                             "type": "string"
                                         },
                                         "user": {
-                                            "$ref": "#/components/schemas/UserResource"
+                                            "$ref": "Modules\\User\\DTO\\UserDTO"
                                         }
                                     },
                                     "type": "object"
@@ -254,40 +254,299 @@
                     }
                 }
             }
-        }
-    },
-    "components": {
-        "schemas": {
-            "UserResource": {
-                "title": "User Resource",
-                "description": "Basic user data",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "name": {
-                        "type": "string",
-                        "example": "John Doe"
-                    },
-                    "email": {
-                        "type": "string",
-                        "example": "john.doe@example.com"
-                    },
-                    "password": {
-                        "type": "string",
-                        "example": "password123"
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "example": "2023-01-01T00:00:00Z"
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "example": "2023-01-01T00:00:00Z"
+        },
+        "/api/groups": {
+            "post": {
+                "tags": [
+                    "Group Management"
+                ],
+                "summary": "Create a new group",
+                "description": "Create a new group",
+                "operationId": "68a4a450f6210430233887aab3213b7d",
+                "requestBody": {
+                    "description": "Details required to create a new group",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "slug"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Administrators"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "administrators"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Group with full access to all resources"
+                                    },
+                                    "permissions": {
+                                        "description": "Array of permission IDs to attach to the group"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
                     }
                 },
-                "type": "object"
+                "responses": {
+                    "201": {
+                        "description": "Group created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/groups/{id}": {
+            "get": {
+                "tags": [
+                    "Group Management"
+                ],
+                "summary": "Retrieve a group by ID",
+                "description": "Get a group by ID",
+                "operationId": "ee1715a4f65d84f15d8b1c628068a2a1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the group to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Group retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "slug": {
+                                            "type": "string"
+                                        },
+                                        "description": {
+                                            "type": "string",
+                                            "nullable": true
+                                        },
+                                        "permissions": {}
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Group not found"
+                    }
+                }
+            }
+        },
+        "/api/groups/{id}/permissions": {
+            "put": {
+                "tags": [
+                    "Group Management"
+                ],
+                "summary": "Update permissions of a specific group",
+                "description": "Update permissions for a group",
+                "operationId": "25b0514f92b7311c41311f5565ccd96b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the group to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Permissions to assign to the group",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "permissions"
+                                ],
+                                "properties": {
+                                    "permissions": {
+                                        "description": "Array of permission IDs"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Permissions updated successfully"
+                    },
+                    "404": {
+                        "description": "Group not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get list of users",
+                "operationId": "c023197cbd3afbb49a16608b32149155",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create a new user",
+                "operationId": "a713eb4fbc229fa416316c3b5e1a2d57",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get a user by ID",
+                "operationId": "bbd5c5451c829ba945101fd2377a5e8f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update a user",
+                "operationId": "d1d9e4576ed100a0d5fcfc0a7f325110",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Delete a user",
+                "operationId": "9ecb16761c51c12752d64afe39906540",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "User deleted successfully"
+                    }
+                }
             }
         }
     },
@@ -295,6 +554,14 @@
         {
             "name": "Authentication",
             "description": "Endpoints for user authentication"
+        },
+        {
+            "name": "Group Management",
+            "description": "Endpoints for managing groups and their permissions"
+        },
+        {
+            "name": "Users",
+            "description": "API Endpoints for managing users"
         }
     ]
 }

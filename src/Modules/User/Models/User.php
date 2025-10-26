@@ -5,6 +5,7 @@ namespace Modules\User\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Modules\User\Traits\HasGroups;
 
 
 class User extends Authenticatable implements JWTSubject
@@ -26,7 +27,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function roles()
     {
-        return $this->belongsToMany(\Modules\Role\Models\Role::class);
+        return $this->belongsToMany(Role::class);
     }
 
 

@@ -4,7 +4,7 @@ namespace Modules\User\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Role\DTO\RoleDTO;
-use Modules\Role\Models\Role;
+;
 
 class RoleSeeder extends Seeder
 {

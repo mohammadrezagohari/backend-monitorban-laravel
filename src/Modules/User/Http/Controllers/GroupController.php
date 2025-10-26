@@ -5,9 +5,43 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Authorization\Models\Group; // مدل Group که ساختیم
 use Spatie\Permission\Models\Permission;
+use OpenApi\Attributes as OA;
+use Symfony\Component\HttpFoundation\Response as HTTPResponse;
 
+#[OA\Tag(
+    name: "Group Management",
+    description: "Endpoints for managing groups and their permissions"
+)]
 class GroupController extends Controller
 {
+     /**
+     * Create a new group
+     */
+    #[OA\Post(
+        path: "/api/groups",
+        summary: "Create a new group",
+        tags: ["Group Management"],
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Details required to create a new group",
+            content: new OA\JsonContent(
+                required: ["name", "slug"],
+                properties: [
+                    new OA\Property(property: "name", type: "string", example: "Administrators"),
+                    new OA\Property(property: "slug", type: "string", example: "administrators"),
+                    new OA\Property(property: "description", type: "string", example: "Group with full access to all resources"),
+                    new OA\Property(
+                        property: "permissions",
+                        description: "Array of permission IDs to attach to the group"
+                    ),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: HTTPResponse::HTTP_CREATED, description: "Group created successfully"),
+            new OA\Response(response: HTTPResponse::HTTP_UNPROCESSABLE_ENTITY, description: "Validation error"),
+        ]
+    )]
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -34,6 +68,43 @@ class GroupController extends Controller
         ], 201);
     }
 
+
+        /**
+     * Get a group by ID
+     */
+    #[OA\Get(
+        path: "/api/groups/{id}",
+        summary: "Retrieve a group by ID",
+        tags: ["Group Management"],
+        parameters: [
+            new OA\Parameter(
+                name: "id",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer"),
+                description: "ID of the group to retrieve"
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: HTTPResponse::HTTP_OK,
+                description: "Group retrieved successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "id", type: "integer"),
+                        new OA\Property(property: "name", type: "string"),
+                        new OA\Property(property: "slug", type: "string"),
+                        new OA\Property(property: "description", type: "string", nullable: true),
+                        new OA\Property(
+                            property: "permissions",
+                        ),
+                    ]
+                )
+            ),
+            new OA\Response(response: HTTPResponse::HTTP_NOT_FOUND, description: "Group not found"),
+        ]
+    )]
+
     public function show($id)
     {
         $group = Group::with('permissions')->findOrFail($id);
@@ -41,6 +112,42 @@ class GroupController extends Controller
         return response()->json($group);
     }
 
+
+    /**
+     * Update permissions for a group
+     */
+    #[OA\Put(
+        path: "/api/groups/{id}/permissions",
+        summary: "Update permissions of a specific group",
+        tags: ["Group Management"],
+        parameters: [
+            new OA\Parameter(
+                name: "id",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer"),
+                description: "ID of the group to update"
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Permissions to assign to the group",
+            content: new OA\JsonContent(
+                required: ["permissions"],
+                properties: [
+                    new OA\Property(
+                        property: "permissions",
+                        description: "Array of permission IDs"
+                    ),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: HTTPResponse::HTTP_OK, description: "Permissions updated successfully"),
+            new OA\Response(response: HTTPResponse::HTTP_NOT_FOUND, description: "Group not found"),
+            new OA\Response(response: HTTPResponse::HTTP_UNPROCESSABLE_ENTITY, description: "Validation error"),
+        ]
+    )]
     public function updatePermissions(Request $request, $id)
     {
         $data = $request->validate([
