@@ -14,33 +14,12 @@
                 "summary": "Register a new user account",
                 "operationId": "55e2aa3e4318719bd4f66f225e1e159c",
                 "requestBody": {
-                    "description": "User registration details",
+                    "description": "User registration payload",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "username",
-                                    "email",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "username": {
-                                        "type": "string",
-                                        "example": "gohari"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "example": "john.doe@example.com"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "password123"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/UserRequestDTO"
                             }
                         }
                     }
@@ -545,6 +524,26 @@
                 "responses": {
                     "204": {
                         "description": "User deleted successfully"
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Login successful",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "token": {
+                                    "type": "string"
+                                },
+                                "user": {
+                                    "$ref": "#/components/schemas/LoginRequestDTO"
+                                }
+                            },
+                            "type": "object"
+                        }
                     }
                 }
             }

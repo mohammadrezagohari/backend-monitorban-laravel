@@ -23,7 +23,7 @@ Route::middleware(['auth:api', 'permission:manage users'])->group(function () {
 Route::group(['prefix' => 'auth'], function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
-    Route::post('token/refresh', [AuthController::class, 'refreshToken']);
+    Route::post('refresh-token', [AuthController::class, 'refreshToken']);
     Route::post('request-otp', [AuthController::class, 'requestOtp']);
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
 

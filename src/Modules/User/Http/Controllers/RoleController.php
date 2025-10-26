@@ -5,12 +5,14 @@ namespace Modules\User\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Modules\User\DTO\RoleValidationDTO;
+use Modules\User\SwaggerDTO\Role\RoleRequestDTO;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-
+use OpenApi\Attributes as OA;
 class RoleController extends Controller
 {
-    
+
     public function index(Request $request)
     {
         $data = $request->validate([
@@ -28,22 +30,28 @@ class RoleController extends Controller
     }
 
 
+    #[OA\Post(
+        path: "/api/roles",
+        summary: "Create a new role",
+        tags: ["Roles"],
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Role creation payload",
+            content: new OA\JsonContent(ref: RoleRequestDTO::class)
+        ),
+        responses: [
+            new OA\Response(response: 201, description: "Role created successfully"),
+            new OA\Response(response: 422, description: "Validation error")
+        ]
+    )]
     public function store(Request $request): JsonResponse
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:150|unique:roles,name',
-            'permissions' => 'array',
-            'permissions.*' => 'exists:permissions,id'
-        ]);
+        $dto = RoleValidationDTO::validateAndCreate(payload: $request);
 
-        $role = Role::create([
-            'name' => $data['name'],
-            'guard_name' => 'web',
-        ]);
+        $role = $dto->toModel();
+        $role->save();
 
-        if (!empty($data['permissions'])) {
-            $role->syncPermissions(Permission::whereIn('id', $data['permissions'])->get());
-        }
+        $dto->syncPermissions($role);
 
         return response()->json([
             'message' => 'Role created successfully',
@@ -53,32 +61,35 @@ class RoleController extends Controller
 
     public function update(Request $request, $id): JsonResponse
     {
+        $role = Role::findOrFail($id);
+
         $data = $request->validate([
             'name' => 'required|string|max:150|unique:roles,name,' . $id,
             'permissions' => 'array',
             'permissions.*' => 'exists:permissions,id'
         ]);
 
-        $role = Role::findOrFail($id);
-        $role->name = $data['name'];
-        $role->save();
+        $role->update([
+            'name' => $data['name'],
+        ]);
 
         if (!empty($data['permissions'])) {
-            $role->syncPermissions(Permission::whereIn('id', $data['permissions'])->get());
+            $role->syncPermissions($data['permissions']);
         }
 
         return response()->json([
             'message' => 'بروزرسانی انجام شده است',
-            'data' => $role
+            'data' => $role->load('permissions')
         ], 200);
     }
+
 
     public function destroy($id): JsonResponse
     {
         $role = Role::findOrFail($id);
         $role->syncPermissions([]);
         $role->delete();
-        
+
         return response()->json(['message' => 'آیتم با موفقیت حذف گرید'], 200);
     }
 }
