@@ -6,7 +6,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\User\Traits\HasGroups;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Modules\User\Traits\HasGroups;
 
 class User extends Authenticatable implements JWTSubject
 {
