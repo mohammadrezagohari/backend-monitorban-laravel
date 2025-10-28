@@ -1,4 +1,3 @@
-.claude
-.claude/*
-.idea
-.idea/*
+.claude/
+.idea/
+.vscode/
