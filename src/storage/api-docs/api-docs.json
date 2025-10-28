@@ -34,64 +34,6 @@
                 }
             }
         },
-        "/api/auth/login": {
-            "post": {
-                "tags": [
-                    "Authentication"
-                ],
-                "summary": "Log in an existing user",
-                "operationId": "9a5569c3c44cd4e2c43d104510928399",
-                "requestBody": {
-                    "description": "User login credentials",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "username",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "username": {
-                                        "type": "string",
-                                        "example": "gohari"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "password123"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Login successful",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "token": {
-                                            "type": "string"
-                                        },
-                                        "user": {
-                                            "$ref": "Modules\\User\\DTO\\UserDTO"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid credentials"
-                    }
-                }
-            }
-        },
         "/api/auth/verify-otp": {
             "post": {
                 "tags": [
@@ -387,6 +329,34 @@
                 }
             }
         },
+        "/api/roles": {
+            "post": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Create a new role",
+                "operationId": "6630954b73937152b182c1cd4ca23bac",
+                "requestBody": {
+                    "description": "Role creation payload",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RoleRequestDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Role created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
         "/api/users": {
             "get": {
                 "tags": [
@@ -527,6 +497,122 @@
                     }
                 }
             }
+        }
+    },
+    "components": {
+        "schemas": {
+            "LoginRequestDTO": {
+                "properties": {
+                    "mobile": {
+                        "type": "string",
+                        "example": "09123456789"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "RoleRequestDTO": {
+                "description": "Payload for creating or updating a Role",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "admin"
+                    },
+                    "guard_name": {
+                        "type": "string",
+                        "example": "web"
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "example": [
+                            1,
+                            2
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "UserRequestDTO": {
+                "properties": {
+                    "first_name": {
+                        "type": "string",
+                        "example": "محمدرضا"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "گوهری"
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "gohari"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "example@gandom.link"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "password123"
+                    },
+                    "mobile": {
+                        "type": "string",
+                        "example": "09123456789"
+                    }
+                },
+                "type": "object"
+            },
+            "UserResponseDTO": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "example": "محمدرضا"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "گوهری"
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "gohari"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "example@gandom.link"
+                    },
+                    "mobile": {
+                        "type": "string",
+                        "example": "09123456789"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-27 21:42:00"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-27 21:42:00"
+                    }
+                },
+                "type": "object"
+            }
         },
         "responses": {
             "200": {
@@ -561,6 +647,10 @@
         {
             "name": "Users",
             "description": "API Endpoints for managing users"
+        },
+        {
+            "name": "Roles",
+            "description": "Roles"
         }
     ]
 }

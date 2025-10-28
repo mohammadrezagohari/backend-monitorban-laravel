@@ -18,7 +18,8 @@
 /public/storage
 /storage/*.key
 /storage/pail
-/vendor
+vendor/*
+!vendor/autoload.php
 Homestead.json
 Homestead.yaml
 Thumbs.db

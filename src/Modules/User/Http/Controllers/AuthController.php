@@ -8,7 +8,6 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Modules\User\DTO\Login\LoginValidationDTO;
-use Modules\User\DTO\UserValidationDTO;
 use Modules\User\Models\User;
 use Modules\User\SwaggerDTO\Login\LoginRequestDTO;
 use Modules\User\SwaggerDTO\User\UserRequestDTO;
@@ -51,6 +50,7 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
         ]);
+        $userDTO = UserRequestDTO::validateAndCreate($request);
 
         $user = $userDTO->toModel();
         $user->save();
