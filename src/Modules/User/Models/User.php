@@ -2,8 +2,10 @@
 
 namespace Modules\User\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\User\Traits\HasGroups;
+use Spatie\Permission\PermissionRegistrar;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -23,11 +25,14 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-
-    public function roles()
+  public function roles(): MorphToMany
     {
-        return $this->belongsToMany(Role::class);
+        return $this->morphToMany(Role::class, 'model', 'model_has_roles', 'model_id', 'role_id'    );
     }
+    // public function roles()
+    // {
+    //     return $this->belongsToMany(Role::class);
+    // }
 
 
     public function groups()

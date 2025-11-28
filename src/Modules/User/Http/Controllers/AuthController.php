@@ -7,12 +7,14 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Modules\User\DTO\Login\LoginValidationDTO;
 use Modules\User\Models\User;
 use Modules\User\SwaggerDTO\Login\LoginRequestDTO;
+use Modules\User\DTO\LoginValidationDTO;
 use Modules\User\SwaggerDTO\User\UserRequestDTO;
 use Modules\User\SwaggerDTO\User\UserResponseDTO;
 use OpenApi\Attributes as OA;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Str;
 use Symfony\Component\HttpFoundation\Response as HTTPResponse;
 use Illuminate\Support\Facades\Cache;
@@ -33,6 +35,7 @@ class AuthController extends Controller
         path: "/api/auth/register",
         summary: "Register a new user account",
         tags: ["Authentication"],
+        accepts: ['application/json'],
         requestBody: new OA\RequestBody(
             required: true,
             description: "User registration payload",
@@ -45,15 +48,31 @@ class AuthController extends Controller
     )]
     public function register(Request $request)
     {
-        $request->validate([
-            'username' => 'required|string|max:255',
+        $validData = $request->validate([
+            'username' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'mobile' => 'required|string|max:11|unique:users',
+            // 'password_confirmation' => 'required|string|same:password'
         ]);
-        $userDTO = UserRequestDTO::validateAndCreate($request);
 
-        $user = $userDTO->toModel();
+        // if ($validData['password'] != $request->password_confirmation) {
+        //     return response()->json(['error' => 'رمز عبور با تکرار آن مطابقت ندارد'], HTTPResponse::HTTP_UNPROCESSABLE_ENTITY);
+        // }
+
+        $validData['password'] = Hash::make($validData['password']);
+
+        $userDTO = UserRequestDTO::validateAndCreate($validData);
+        $user = new User($userDTO->all());
         $user->save();
+
+        if (Role::where('name', '=', 'user')->count() == 0) {
+            $role = Role::create(['name' => 'user']);
+            $permission = Permission::create(['name' => 'view dashboard']);
+            $role->givePermissionTo($permission);
+        }
 
         $user->assignRole(['user']); // نقش پیش‌فرض
 
@@ -72,7 +91,12 @@ class AuthController extends Controller
     )]
     public function login(Request $request)
     {
-        $loginDTO = LoginValidationDTO::validateAndCreate($request);
+        $validData = $request->validate([
+            'password' => 'required|string|min:8',
+            'mobile' => 'required|string|min:8|max:20|exists:users,mobile',
+        ]);
+
+        $loginDTO = LoginValidationDTO::validateAndCreate($validData);
 
         $credentials = [
             'mobile' => $loginDTO->mobile,

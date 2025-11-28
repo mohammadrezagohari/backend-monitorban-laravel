@@ -3,9 +3,10 @@
 namespace Modules\User\SwaggerDTO\User;
 
 use OpenApi\Attributes as OA;
+use Spatie\LaravelData\Data;
 
 #[OA\Schema(schema: "UserResponseDTO")]
-class UserResponseDTO
+class UserResponseDTO extends Data
 {
     #[OA\Property(type: 'integer', example: 1)]
     public int $id;
