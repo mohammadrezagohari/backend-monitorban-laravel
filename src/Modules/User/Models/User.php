@@ -2,8 +2,10 @@
 
 namespace Modules\User\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Modules\User\Database\Factories\UserFactoryFactory;
 use Modules\User\Traits\HasGroups;
 use Spatie\Permission\PermissionRegistrar;
 use Spatie\Permission\Traits\HasRoles;
@@ -11,8 +13,12 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasRoles , HasGroups;
+    use HasRoles , HasGroups , HasFactory;
 
+    protected static function newFactory()
+    {
+        return UserFactoryFactory::new();
+    }
     protected $fillable = ['first_name', 'last_name', 'username', 'email', 'password', 'mobile'];
 
     public function getJWTIdentifier()

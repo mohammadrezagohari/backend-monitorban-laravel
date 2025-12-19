@@ -2,11 +2,13 @@
 
 namespace Modules\User\Http\Controllers;
 
+use DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Modules\User\Models\User;
 use Modules\User\SwaggerDTO\Login\LoginRequestDTO;
 use Modules\User\DTO\LoginValidationDTO;
@@ -35,7 +37,7 @@ class AuthController extends Controller
         path: "/api/auth/register",
         summary: "Register a new user account",
         tags: ["Authentication"],
-        accepts: ['application/json'],
+        // accepts: ['application/json'],
         requestBody: new OA\RequestBody(
             required: true,
             description: "User registration payload",
@@ -46,6 +48,7 @@ class AuthController extends Controller
             new OA\Response(response: 422, description: "Validation error")
         ]
     )]
+
     public function register(Request $request)
     {
         $validData = $request->validate([
@@ -58,25 +61,35 @@ class AuthController extends Controller
             // 'password_confirmation' => 'required|string|same:password'
         ]);
 
-        // if ($validData['password'] != $request->password_confirmation) {
-        //     return response()->json(['error' => 'رمز عبور با تکرار آن مطابقت ندارد'], HTTPResponse::HTTP_UNPROCESSABLE_ENTITY);
-        // }
+        $result = DB::transaction(function () use ($validData) {
+            $validData['password'] = Hash::make($validData['password']);
 
-        $validData['password'] = Hash::make($validData['password']);
+            $userDTO = UserRequestDTO::validateAndCreate($validData);
+            $user = new User($userDTO->all());
+            $user->save();
 
-        $userDTO = UserRequestDTO::validateAndCreate($validData);
-        $user = new User($userDTO->all());
-        $user->save();
+            if (Role::where('name', '=', 'user')->count() == 0) {
+                $role = Role::create(['name' => 'user']);
+                $permission = Permission::create(['name' => 'view dashboard']);
+                $role->givePermissionTo($permission);
+            }
 
-        if (Role::where('name', '=', 'user')->count() == 0) {
-            $role = Role::create(['name' => 'user']);
-            $permission = Permission::create(['name' => 'view dashboard']);
-            $role->givePermissionTo($permission);
+            $user->assignRole(['user']); // نقش پیش‌فرض
+            return compact('user');
+            // Log::info('User registered successfully', ['token' => $token]);
+        });
+
+        $credentials = [
+            'mobile' => $validData['mobile'],
+            'password' => $validData['password'],
+        ];
+
+        if (!$token = Auth::guard('api')->attempt($credentials)) {
+            return response()->json(['error' => 'اطلاعات وارد شده صحیح نیست'], 401);
         }
 
-        $user->assignRole(['user']); // نقش پیش‌فرض
+        return response()->json(['message' => 'ثبت‌ نام موفق بود', 'user' => $result['user'], 'token' =>$token], HTTPResponse::HTTP_CREATED);
 
-        return response()->json(['message' => 'ثبت‌ نام موفق بود'], HTTPResponse::HTTP_CREATED);
     }
 
     #[OA\Response(
@@ -88,6 +101,20 @@ class AuthController extends Controller
                 new OA\Property(property: "user", ref: LoginRequestDTO::class),
             ]
         )
+    )]
+    #[OA\Post(
+        path: "/api/auth/login",
+        summary: "login user account",
+        tags: ["Authentication"],
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "User Login payload",
+            content: new OA\JsonContent(ref: LoginRequestDTO::class),
+        ),
+        responses: [
+            new OA\Response(response: 201, description: "Login successful"),
+            new OA\Response(response: 422, description: "Validation error")
+        ]
     )]
     public function login(Request $request)
     {

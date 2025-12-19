@@ -2,7 +2,9 @@
 
 namespace Modules\User\Database\Seeders;
 
+use Hash;
 use Illuminate\Database\Seeder;
+use Modules\User\Models\User;
 
 class UserDatabaseSeeder extends Seeder
 {
@@ -11,6 +13,9 @@ class UserDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        $users = User::factory(10)->create(['password'=>Hash::make('password')]);
+        foreach ($users as $user) {
+            $user->assignRole('admin');
+        }
     }
 }

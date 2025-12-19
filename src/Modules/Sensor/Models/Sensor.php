@@ -10,13 +10,28 @@ class Sensor extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     */
-    protected $fillable = [];
+    protected $fillable = [
+        'name',
+        'server_room_id',
+        'type',
+        'title_fa',
+        'title_en',
+        'alert_type',
+        'physical_address',
+        'unit',
+        'alert_interval',
+        'alert_count',
+        'min_daily_record',
+        'recordable_changes',
+        'has_critical_history',
+        'has_warning_history',
+        'crisis_committee',
+        'icon',
+        'profile_picture',
+    ];
 
-    // protected static function newFactory(): SensorFactory
-    // {
-    //     // return SensorFactory::new();
-    // }
+    public function serverRoom()
+    {
+        return $this->belongsTo(ServerRoom::class);
+    }
 }

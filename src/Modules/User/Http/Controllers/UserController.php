@@ -27,7 +27,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        return response()->json($users);
+        return response()->json(['data' => $users, 'status' => 200]);
     }
 
     #[OA\Post(
@@ -88,6 +88,7 @@ class UserController extends Controller
             )
         ]
     )]
+    
     public function show($id)
     {
         $user = User::findOrFail($id);

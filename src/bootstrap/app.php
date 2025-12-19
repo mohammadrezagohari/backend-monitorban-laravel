@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Modules\User\Http\Middleware\CheckGroupPermission;
+use Modules\User\Http\Middleware\CheckRoleAdminMiddleware;
 use Tymon\JWTAuth\Http\Middleware\Authenticate as JwtAuth;
 use Tymon\JWTAuth\Http\Middleware\RefreshToken as JwtRefresh;
 return Application::configure(basePath: dirname(__DIR__))
@@ -14,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
+            'role' => CheckRoleAdminMiddleware::class,
             'jwt.auth' => JwtAuth::class,
             'jwt.refresh' => JwtRefresh::class,
             'group.permission' => CheckGroupPermission::class,

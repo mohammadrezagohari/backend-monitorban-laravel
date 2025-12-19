@@ -3,7 +3,8 @@
 namespace Modules\User\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Modules\Role\DTO\RoleDTO;
+use Modules\User\DTO\RoleDTO;
+use Modules\User\Models\Role;
 ;
 
 class RoleSeeder extends Seeder
@@ -15,18 +16,15 @@ class RoleSeeder extends Seeder
     {
         
         $superAdmin = RoleDTO::from([
-            'name' => 'سوپر ادمین',
-            'slug' => 'super-admin',
+            'name' =>  'super-admin',
         ]);
 
         $admin = RoleDTO::from([
-            'name' => 'ادمین',
-            'slug' => 'admin',
+            'name' => 'admin',
         ]);
 
         $superVisor = RoleDTO::from([
-            'name' => 'سوپروایزر',
-            'slug' => 'super-visor',
+            'name' => 'super-visor',
         ]);
 
         Role::create($superAdmin->toArray());

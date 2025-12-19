@@ -34,6 +34,52 @@
                 }
             }
         },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "login user account",
+                "operationId": "9a5569c3c44cd4e2c43d104510928399",
+                "requestBody": {
+                    "description": "User Login payload",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequestDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Login successful"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/LoginRequestDTO"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/auth/verify-otp": {
             "post": {
                 "tags": [
@@ -612,26 +658,6 @@
                     }
                 },
                 "type": "object"
-            }
-        },
-        "responses": {
-            "200": {
-                "description": "Login successful",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "token": {
-                                    "type": "string"
-                                },
-                                "user": {
-                                    "$ref": "#/components/schemas/LoginRequestDTO"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
             }
         }
     },
