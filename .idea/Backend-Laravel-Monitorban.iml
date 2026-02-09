@@ -6,8 +6,21 @@
       <sourceFolder url="file://$MODULE_DIR$/src/app" isTestSource="false" packagePrefix="App\" />
       <sourceFolder url="file://$MODULE_DIR$/src/database/factories" isTestSource="false" packagePrefix="Database\Factories\" />
       <sourceFolder url="file://$MODULE_DIR$/src/database/seeders" isTestSource="false" packagePrefix="Database\Seeders\" />
-      <sourceFolder url="file://$MODULE_DIR$/src/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Modules/Room/app" isTestSource="false" packagePrefix="Modules\Room\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Modules/Room/database/factories" isTestSource="false" packagePrefix="Modules\Room\Database\Factories\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Modules/Room/database/seeders" isTestSource="false" packagePrefix="Modules\Room\Database\Seeders\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Modules/Room/tests" isTestSource="true" packagePrefix="Modules\Room\Tests\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Modules/Sensor/app" isTestSource="false" packagePrefix="Modules\Sensor\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Modules/Sensor/database/factories" isTestSource="false" packagePrefix="Modules\Sensor\Database\Factories\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Modules/Sensor/database/seeders" isTestSource="false" packagePrefix="Modules\Sensor\Database\Seeders\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Modules/Sensor/tests" isTestSource="true" packagePrefix="Modules\Sensor\Tests\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Modules/User/Database/Seeders" isTestSource="false" packagePrefix="Modules\User\Database\Seeders\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Modules/User/Database/factories" isTestSource="false" packagePrefix="Modules\User\Database\Factories\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Modules/User/app" isTestSource="false" packagePrefix="Modules\User\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Modules/User/tests" isTestSource="true" packagePrefix="Modules\User\Tests\" />
       <sourceFolder url="file://$MODULE_DIR$/src/tests" isTestSource="true" packagePrefix="Tests\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/tests/Feature" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/tests/Unit" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/src/vendor/brick/math" />
       <excludeFolder url="file://$MODULE_DIR$/src/vendor/carbonphp/carbon-doctrine-types" />
       <excludeFolder url="file://$MODULE_DIR$/src/vendor/composer" />
@@ -125,6 +138,35 @@
       <excludeFolder url="file://$MODULE_DIR$/src/vendor/voku/portable-ascii" />
       <excludeFolder url="file://$MODULE_DIR$/src/vendor/webmozart/assert" />
       <excludeFolder url="file://$MODULE_DIR$/src/vendor/wikimedia/composer-merge-plugin" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/amphp/amp" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/amphp/byte-stream" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/amphp/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/amphp/dns" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/amphp/parallel" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/amphp/parser" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/amphp/pipeline" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/amphp/process" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/amphp/serialization" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/amphp/socket" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/amphp/sync" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/darkaonline/l5-swagger" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/daverandom/libdns" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/doctrine/annotations" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/doctrine/deprecations" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/kelunik/certificate" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/phpdocumentor/reflection" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/phpdocumentor/reflection-common" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/phpdocumentor/reflection-docblock" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/phpdocumentor/type-resolver" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/phpstan/phpdoc-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/predis/predis" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/psr/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/revolt/event-loop" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/spatie/laravel-data" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/spatie/laravel-package-tools" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/spatie/php-structure-discoverer" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/swagger-api/swagger-ui" />
+      <excludeFolder url="file://$MODULE_DIR$/src/vendor/zircote/swagger-php" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

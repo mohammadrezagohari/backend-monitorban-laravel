@@ -1,5 +1,6 @@
 {
     "User": true,
     "Sensor": true,
-    "Room": true
+    "Room": true,
+    "Ticket": true
 }
