@@ -3,7 +3,7 @@ namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Modules\Authorization\Models\Group; // مدل Group که ساختیم
+use Modules\User\Models\Group; // مدل Group که ساختیم
 use Spatie\Permission\Models\Permission;
 use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\Response as HTTPResponse;
@@ -18,12 +18,11 @@ class GroupController extends Controller
      * Create a new group
      */
     #[OA\Post(
-        path: "/api/groups",
+        path: "/api/v1/groups",
         summary: "Create a new group",
-        tags: ["Group Management"],
         requestBody: new OA\RequestBody(
-            required: true,
             description: "Details required to create a new group",
+            required: true,
             content: new OA\JsonContent(
                 required: ["name", "slug"],
                 properties: [
@@ -37,6 +36,7 @@ class GroupController extends Controller
                 ]
             )
         ),
+        tags: ["Group Management"],
         responses: [
             new OA\Response(response: HTTPResponse::HTTP_CREATED, description: "Group created successfully"),
             new OA\Response(response: HTTPResponse::HTTP_UNPROCESSABLE_ENTITY, description: "Validation error"),
@@ -73,16 +73,16 @@ class GroupController extends Controller
      * Get a group by ID
      */
     #[OA\Get(
-        path: "/api/groups/{id}",
+        path: "/api/v1/groups/{id}",
         summary: "Retrieve a group by ID",
         tags: ["Group Management"],
         parameters: [
             new OA\Parameter(
                 name: "id",
+                description: "ID of the group to retrieve",
                 in: "path",
                 required: true,
-                schema: new OA\Schema(type: "integer"),
-                description: "ID of the group to retrieve"
+                schema: new OA\Schema(type: "integer")
             )
         ],
         responses: [
@@ -117,18 +117,8 @@ class GroupController extends Controller
      * Update permissions for a group
      */
     #[OA\Put(
-        path: "/api/groups/{id}/permissions",
+        path: "/api/v1/groups/{id}/permissions",
         summary: "Update permissions of a specific group",
-        tags: ["Group Management"],
-        parameters: [
-            new OA\Parameter(
-                name: "id",
-                in: "path",
-                required: true,
-                schema: new OA\Schema(type: "integer"),
-                description: "ID of the group to update"
-            )
-        ],
         requestBody: new OA\RequestBody(
             required: true,
             description: "Permissions to assign to the group",
@@ -142,6 +132,16 @@ class GroupController extends Controller
                 ]
             )
         ),
+        tags: ["Group Management"],
+        parameters: [
+            new OA\Parameter(
+                name: "id",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer"),
+                description: "ID of the group to update"
+            )
+        ],
         responses: [
             new OA\Response(response: HTTPResponse::HTTP_OK, description: "Permissions updated successfully"),
             new OA\Response(response: HTTPResponse::HTTP_NOT_FOUND, description: "Group not found"),

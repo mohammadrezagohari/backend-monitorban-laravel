@@ -26,23 +26,23 @@ use Illuminate\Support\Facades\Cache;
     description: "Endpoints for user authentication"
 )]
 #[OA\Info(
-    title: "Authentication",
     version: "1.0.0",
-    description: "Endpoints for user authentication"
+    description: "Endpoints for user authentication",
+    title: "Authentication"
 )]
 class AuthController extends Controller
 {
 
     #[OA\Post(
-        path: "/api/auth/register",
+        path: "/api/v1/auth/register",
         summary: "Register a new user account",
-        tags: ["Authentication"],
-        // accepts: ['application/json'],
         requestBody: new OA\RequestBody(
-            required: true,
             description: "User registration payload",
+            required: true,
             content: new OA\JsonContent(ref: UserRequestDTO::class),
         ),
+        // accepts: ['application/json'],
+        tags: ["Authentication"],
         responses: [
             new OA\Response(response: 201, description: "Registration successful"),
             new OA\Response(response: 422, description: "Validation error")
@@ -103,7 +103,7 @@ class AuthController extends Controller
         )
     )]
     #[OA\Post(
-        path: "/api/auth/login",
+        path: "/api/v1/auth/login",
         summary: "login user account",
         tags: ["Authentication"],
         requestBody: new OA\RequestBody(
@@ -145,7 +145,7 @@ class AuthController extends Controller
      * @return JsonResponse
      */
     #[OA\Post(
-        path: "/api/auth/verify-otp",
+        path: "/api/v1/auth/verify-otp",
         summary: "Verify the one-time password (OTP)",
         tags: ["Authentication"],
         requestBody: new OA\RequestBody(
@@ -203,7 +203,7 @@ class AuthController extends Controller
 
 
     #[OA\Post(
-        path: "/api/auth/request-otp",
+        path: "/api/v1/auth/request-otp",
         summary: "Request a one-time password (OTP)",
         tags: ["Authentication"],
         requestBody: new OA\RequestBody(
@@ -245,7 +245,7 @@ class AuthController extends Controller
 
 
     #[OA\Post(
-        path: "/api/auth/refresh-token",
+        path: "/api/v1/auth/refresh-token",
         summary: "Refresh the access token using a refresh token",
         tags: ["Authentication"],
         requestBody: new OA\RequestBody(

@@ -15,10 +15,14 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasRoles , HasGroups , HasFactory;
 
-    protected static function newFactory()
+    protected static function newFactory(): UserFactoryFactory
     {
         return UserFactoryFactory::new();
     }
+    protected $hidden=[
+        'password',
+    ];
+
     protected $fillable = ['first_name', 'last_name', 'username', 'email', 'password', 'mobile'];
 
     public function getJWTIdentifier()
@@ -35,10 +39,6 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->morphToMany(Role::class, 'model', 'model_has_roles', 'model_id', 'role_id'    );
     }
-    // public function roles()
-    // {
-    //     return $this->belongsToMany(Role::class);
-    // }
 
 
     public function groups()

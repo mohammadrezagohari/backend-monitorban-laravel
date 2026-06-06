@@ -3,6 +3,7 @@
 namespace Modules\Sensor\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Modules\Sensor\Http\Requests\StoreSensorRequest;
 use Modules\Sensor\Http\Requests\UpdateSensorRequest;
 use Modules\Sensor\Models\Sensor;
@@ -10,6 +11,7 @@ use Modules\Sensor\Data\SensorData;
 use Modules\Sensor\Data\StoreSensorData;
 use Modules\Sensor\Data\UpdateSensorData;
 use OpenApi\Attributes as OA;
+
 class SensorController extends Controller
 {
     #[OA\Get(
@@ -20,28 +22,32 @@ class SensorController extends Controller
             new OA\Response(
                 response: 200,
                 description: "List of sensors",
-                content: new OA\JsonContent(type: "array", items: new OA\Items(ref: "#/components/schemas/SensorData"))
+                content: new OA\JsonContent(type: "array", items: new OA\Items(ref: SensorData::class))
             )
         ]
     )]
-    public function index()
+    public function index(Request $request)
     {
-        return Sensor::all();
+        $sensors = Sensor::with(['serverRoom'])->paginate($request->page);
+
+        return response()->json([
+            'data' => $sensors
+        ]);
     }
 
     #[OA\Post(
         path: "/api/sensors",
         summary: "Create sensor",
-        tags: ["Sensors"],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: "#/components/schemas/StoreSensorData")
+            content: new OA\JsonContent(ref: StoreSensorData::class)
         ),
+        tags: ["Sensors"],
         responses: [
             new OA\Response(
                 response: 201,
                 description: "Sensor created",
-                content: new OA\JsonContent(ref: "#/components/schemas/SensorData")
+                content: new OA\JsonContent(ref: SensorData::class)
             )
         ]
     )]
@@ -68,7 +74,7 @@ class SensorController extends Controller
             new OA\Response(
                 response: 200,
                 description: "Sensor details",
-                content: new OA\JsonContent(ref: "#/components/schemas/SensorData")
+                content: new OA\JsonContent(ref: SensorData::class)
             )
         ]
     )]
@@ -80,16 +86,16 @@ class SensorController extends Controller
     #[OA\Put(
         path: "/api/sensors/{id}",
         summary: "Update sensor",
-        tags: ["Sensors"],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: "#/components/schemas/UpdateSensorData")
+            content: new OA\JsonContent(ref: UpdateSensorData::class)
         ),
+        tags: ["Sensors"],
         responses: [
             new OA\Response(
                 response: 200,
                 description: "Sensor updated",
-                content: new OA\JsonContent(ref: "#/components/schemas/SensorData")
+                content: new OA\JsonContent(ref: SensorData::class)
             )
         ]
     )]

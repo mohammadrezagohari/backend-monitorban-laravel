@@ -6,13 +6,142 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/auth/register": {
+        "/api/sensors": {
+            "get": {
+                "tags": [
+                    "Sensors"
+                ],
+                "summary": "List sensors",
+                "operationId": "43c6c945d16023827c0c8ae427f25b71",
+                "responses": {
+                    "200": {
+                        "description": "List of sensors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "Modules\\Sensor\\Data\\SensorData"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Sensors"
+                ],
+                "summary": "Create sensor",
+                "operationId": "b46f41474a5ead9dc12e89caaae80e1c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "Modules\\Sensor\\Data\\StoreSensorData"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Sensor created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "Modules\\Sensor\\Data\\SensorData"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sensors/{id}": {
+            "get": {
+                "tags": [
+                    "Sensors"
+                ],
+                "summary": "Show sensor",
+                "operationId": "15b5e58505c8f2a1f2232e210021b7e1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sensor details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "Modules\\Sensor\\Data\\SensorData"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Sensors"
+                ],
+                "summary": "Update sensor",
+                "operationId": "58c8435aad4aa8495660f9f6bd249ad7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "Modules\\Sensor\\Data\\UpdateSensorData"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sensor updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "Modules\\Sensor\\Data\\SensorData"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Sensors"
+                ],
+                "summary": "Delete sensor",
+                "operationId": "354b6956cab5d958c020f45b9cabb795",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Deleted"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/register": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Register a new user account",
-                "operationId": "55e2aa3e4318719bd4f66f225e1e159c",
+                "operationId": "cff73fd071f3310eaa857e8674331eaf",
                 "requestBody": {
                     "description": "User registration payload",
                     "required": true,
@@ -34,13 +163,13 @@
                 }
             }
         },
-        "/api/auth/login": {
+        "/api/v1/auth/login": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "login user account",
-                "operationId": "9a5569c3c44cd4e2c43d104510928399",
+                "operationId": "2d4442d06a644df0fb22e8de8a5a93dd",
                 "requestBody": {
                     "description": "User Login payload",
                     "required": true,
@@ -80,13 +209,13 @@
                 }
             }
         },
-        "/api/auth/verify-otp": {
+        "/api/v1/auth/verify-otp": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Verify the one-time password (OTP)",
-                "operationId": "99d7dc7005c535c78545e5fcf84d7289",
+                "operationId": "a061564c8d1b9544442483f7d966f510",
                 "requestBody": {
                     "description": "Verify OTP for authentication",
                     "required": true,
@@ -125,13 +254,13 @@
                 }
             }
         },
-        "/api/auth/request-otp": {
+        "/api/v1/auth/request-otp": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Request a one-time password (OTP)",
-                "operationId": "3633b93c46b71423ff3dc6ac41ebb837",
+                "operationId": "bb1076cdaa8505ee7200416db1453eef",
                 "requestBody": {
                     "description": "Request OTP for authentication",
                     "required": true,
@@ -162,13 +291,13 @@
                 }
             }
         },
-        "/api/auth/refresh-token": {
+        "/api/v1/auth/refresh-token": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Refresh the access token using a refresh token",
-                "operationId": "c5f9576575f65627e1f0c2ee15d8febb",
+                "operationId": "f7baa8d2c3baf5fa4cbd70e0e833347b",
                 "requestBody": {
                     "description": "Refresh token details",
                     "required": true,
@@ -222,14 +351,14 @@
                 }
             }
         },
-        "/api/groups": {
+        "/api/v1/groups": {
             "post": {
                 "tags": [
                     "Group Management"
                 ],
                 "summary": "Create a new group",
                 "description": "Create a new group",
-                "operationId": "68a4a450f6210430233887aab3213b7d",
+                "operationId": "661756229c751aefb1fa7eacfd626c78",
                 "requestBody": {
                     "description": "Details required to create a new group",
                     "required": true,
@@ -272,14 +401,14 @@
                 }
             }
         },
-        "/api/groups/{id}": {
+        "/api/v1/groups/{id}": {
             "get": {
                 "tags": [
                     "Group Management"
                 ],
                 "summary": "Retrieve a group by ID",
                 "description": "Get a group by ID",
-                "operationId": "ee1715a4f65d84f15d8b1c628068a2a1",
+                "operationId": "e89404a62b1ee2744dafdd7d70b82beb",
                 "parameters": [
                     {
                         "name": "id",
@@ -324,14 +453,14 @@
                 }
             }
         },
-        "/api/groups/{id}/permissions": {
+        "/api/v1/groups/{id}/permissions": {
             "put": {
                 "tags": [
                     "Group Management"
                 ],
                 "summary": "Update permissions of a specific group",
                 "description": "Update permissions for a group",
-                "operationId": "25b0514f92b7311c41311f5565ccd96b",
+                "operationId": "6a756e031126249729b4864b58170a03",
                 "parameters": [
                     {
                         "name": "id",
@@ -403,13 +532,13 @@
                 }
             }
         },
-        "/api/users": {
+        "/api/v1/users": {
             "get": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Get list of users",
-                "operationId": "c023197cbd3afbb49a16608b32149155",
+                "operationId": "c15742b10ad7f62d9671725abe9f5a27",
                 "responses": {
                     "200": {
                         "description": "Successful operation"
@@ -421,19 +550,23 @@
                     "Users"
                 ],
                 "summary": "Create a new user",
-                "operationId": "a713eb4fbc229fa416316c3b5e1a2d57",
+                "operationId": "b0c4a6775c479c255f8e2e85ba1f17aa",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "name",
-                                    "email",
+                                    "first_name",
+                                    "last_name",
+                                    "mobile",
                                     "password"
                                 ],
                                 "properties": {
-                                    "name": {
+                                    "first_name": {
+                                        "type": "string"
+                                    },
+                                    "last_name": {
                                         "type": "string"
                                     },
                                     "email": {
@@ -455,13 +588,13 @@
                 }
             }
         },
-        "/api/users/{id}": {
+        "/api/v1/users/{id}": {
             "get": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Get a user by ID",
-                "operationId": "bbd5c5451c829ba945101fd2377a5e8f",
+                "operationId": "6ef4e9f2374c16a2a82cb41ec2b82fce",
                 "parameters": [
                     {
                         "name": "id",
@@ -483,7 +616,7 @@
                     "Users"
                 ],
                 "summary": "Update a user",
-                "operationId": "d1d9e4576ed100a0d5fcfc0a7f325110",
+                "operationId": "1bb62fa07e0740ec0619073307062471",
                 "parameters": [
                     {
                         "name": "id",
@@ -526,7 +659,7 @@
                     "Users"
                 ],
                 "summary": "Delete a user",
-                "operationId": "9ecb16761c51c12752d64afe39906540",
+                "operationId": "874249ba6cf4202944a0dc1717eb8833",
                 "parameters": [
                     {
                         "name": "id",
@@ -659,6 +792,14 @@
                 },
                 "type": "object"
             }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
         }
     },
     "tags": [
@@ -673,6 +814,10 @@
         {
             "name": "Users",
             "description": "API Endpoints for managing users"
+        },
+        {
+            "name": "Sensors",
+            "description": "Sensors"
         },
         {
             "name": "Roles",
