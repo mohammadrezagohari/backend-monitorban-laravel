@@ -2,6 +2,7 @@
 
 namespace Modules\Ticket\Models;
 
+use App\Models\Concerns\TracksLastChange;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,7 +13,7 @@ use Modules\User\Models\User;
 
 class Ticket extends Model
 {
-    use HasFactory;
+    use HasFactory, TracksLastChange;
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +24,8 @@ class Ticket extends Model
         'subject',
         'recipient',
         'message',
-        'status'
+        'status',
+        'last_change_by',
     ];
 
     public function user(): BelongsTo

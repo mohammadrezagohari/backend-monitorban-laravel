@@ -20,6 +20,7 @@ class GroupController extends Controller
     #[OA\Post(
         path: "/api/v1/groups",
         summary: "Create a new group",
+        security: [["bearerAuth" => []]],
         requestBody: new OA\RequestBody(
             description: "Details required to create a new group",
             required: true,
@@ -75,6 +76,7 @@ class GroupController extends Controller
     #[OA\Get(
         path: "/api/v1/groups/{id}",
         summary: "Retrieve a group by ID",
+        security: [["bearerAuth" => []]],
         tags: ["Group Management"],
         parameters: [
             new OA\Parameter(
@@ -119,6 +121,7 @@ class GroupController extends Controller
     #[OA\Put(
         path: "/api/v1/groups/{id}/permissions",
         summary: "Update permissions of a specific group",
+        security: [["bearerAuth" => []]],
         requestBody: new OA\RequestBody(
             required: true,
             description: "Permissions to assign to the group",

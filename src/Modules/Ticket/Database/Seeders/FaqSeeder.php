@@ -18,19 +18,22 @@ class FaqSeeder extends Seeder
         Faq::create([
             'question' => 'متن آزمایشی برای سوال کاربر متن آزمایشی برای سوال کاربر',
             'answer' => $dummyText,
-            'sort_order' => 1
+            'sort_order' => 1,
+            'last_change_by' => 1,
         ]);
 
         Faq::create([
             'question' => 'متن آزمایشی برای سوال کاربر متن آزمایشی برای سوال کاربر',
             'answer' => $dummyText,
-            'sort_order' => 2
+            'sort_order' => 2,
+            'last_change_by' => 1,
         ]);
 
         Faq::create([
             'question' => 'متن آزمایشی برای سوال کاربر متن آزمایشی برای سوال کاربر',
             'answer' => $dummyText,
-            'sort_order' => 3
+            'sort_order' => 3,
+            'last_change_by' => 1,
         ]);
     }
 }

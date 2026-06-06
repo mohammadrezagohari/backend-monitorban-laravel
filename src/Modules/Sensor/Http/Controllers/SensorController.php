@@ -15,8 +15,9 @@ use OpenApi\Attributes as OA;
 class SensorController extends Controller
 {
     #[OA\Get(
-        path: "/api/sensors",
+        path: "/api/v1/sensors",
         summary: "List sensors",
+        security: [["bearerAuth" => []]],
         tags: ["Sensors"],
         responses: [
             new OA\Response(
@@ -36,8 +37,9 @@ class SensorController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/sensors",
+        path: "/api/v1/sensors",
         summary: "Create sensor",
+        security: [["bearerAuth" => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(ref: StoreSensorData::class)
@@ -64,11 +66,12 @@ class SensorController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/sensors/{id}",
+        path: "/api/v1/sensors/{sensor}",
         summary: "Show sensor",
+        security: [["bearerAuth" => []]],
         tags: ["Sensors"],
         parameters: [
-            new OA\Parameter(name: "id", in: "path", required: true)
+            new OA\Parameter(name: "sensor", in: "path", required: true, schema: new OA\Schema(type: "integer"))
         ],
         responses: [
             new OA\Response(
@@ -84,8 +87,12 @@ class SensorController extends Controller
     }
 
     #[OA\Put(
-        path: "/api/sensors/{id}",
+        path: "/api/v1/sensors/{sensor}",
         summary: "Update sensor",
+        security: [["bearerAuth" => []]],
+        parameters: [
+            new OA\Parameter(name: "sensor", in: "path", required: true, schema: new OA\Schema(type: "integer"))
+        ],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(ref: UpdateSensorData::class)
@@ -112,11 +119,12 @@ class SensorController extends Controller
     }
 
     #[OA\Delete(
-        path: "/api/sensors/{id}",
+        path: "/api/v1/sensors/{sensor}",
         summary: "Delete sensor",
+        security: [["bearerAuth" => []]],
         tags: ["Sensors"],
         parameters: [
-            new OA\Parameter(name: "id", in: "path", required: true)
+            new OA\Parameter(name: "sensor", in: "path", required: true, schema: new OA\Schema(type: "integer"))
         ],
         responses: [
             new OA\Response(response: 204, description: "Deleted")

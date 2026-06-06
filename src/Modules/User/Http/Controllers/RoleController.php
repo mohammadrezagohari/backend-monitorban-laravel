@@ -10,9 +10,29 @@ use Modules\User\SwaggerDTO\Role\RoleRequestDTO;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use OpenApi\Attributes as OA;
+
+#[OA\Tag(
+    name: "Roles",
+    description: "Admin endpoints for managing roles"
+)]
 class RoleController extends Controller
 {
 
+    #[OA\Get(
+        path: "/api/v1/roles",
+        summary: "List roles",
+        security: [["bearerAuth" => []]],
+        tags: ["Roles"],
+        parameters: [
+            new OA\Parameter(name: "page", in: "query", required: false, schema: new OA\Schema(type: "integer", example: 1)),
+            new OA\Parameter(name: "per_page", in: "query", required: false, schema: new OA\Schema(type: "integer", example: 10)),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: "Roles list"),
+            new OA\Response(response: 401, description: "Unauthenticated"),
+            new OA\Response(response: 403, description: "Forbidden"),
+        ]
+    )]
     public function index(Request $request)
     {
         $data = $request->validate([
@@ -31,8 +51,9 @@ class RoleController extends Controller
 
 
     #[OA\Post(
-        path: "/api/roles",
+        path: "/api/v1/roles",
         summary: "Create a new role",
+        security: [["bearerAuth" => []]],
         tags: ["Roles"],
         requestBody: new OA\RequestBody(
             required: true,

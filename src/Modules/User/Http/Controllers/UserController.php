@@ -16,6 +16,7 @@ class UserController extends Controller
     #[OA\Get(
         path: "/api/v1/users",
         summary: "Get list of users",
+        security: [["bearerAuth" => []]],
         tags: ["Users"],
         responses: [
             new OA\Response(
@@ -33,6 +34,7 @@ class UserController extends Controller
     #[OA\Post(
         path: "/api/v1/users",
         summary: "Create a new user",
+        security: [["bearerAuth" => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -40,6 +42,7 @@ class UserController extends Controller
                 properties: [
                     new OA\Property(property: "first_name", type: "string"),
                     new OA\Property(property: "last_name", type: "string"),
+                    new OA\Property(property: "mobile", type: "string", example: "09123456789"),
                     new OA\Property(property: "email", type: "string"),
                     new OA\Property(property: "password", type: "string")
                 ]
@@ -73,12 +76,13 @@ class UserController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/v1/users/{id}",
+        path: "/api/v1/users/{user}",
         summary: "Get a user by ID",
+        security: [["bearerAuth" => []]],
         tags: ["Users"],
         parameters: [
             new OA\Parameter(
-                name: "id",
+                name: "user",
                 in: "path",
                 required: true,
                 schema: new OA\Schema(type: "integer")
@@ -98,12 +102,13 @@ class UserController extends Controller
     }
 
     #[OA\Put(
-        path: "/api/v1/users/{id}",
+        path: "/api/v1/users/{user}",
         tags: ["Users"],
         summary: "Update a user",
+        security: [["bearerAuth" => []]],
         parameters: [
             new OA\Parameter(
-                name: "id",
+                name: "user",
                 in: "path",
                 required: true,
                 schema: new OA\Schema(type: "integer")
@@ -142,12 +147,13 @@ class UserController extends Controller
     }
 
     #[OA\Delete(
-        path: "/api/v1/users/{id}",
+        path: "/api/v1/users/{user}",
         tags: ["Users"],
         summary: "Delete a user",
+        security: [["bearerAuth" => []]],
         parameters: [
             new OA\Parameter(
-                name: "id",
+                name: "user",
                 in: "path",
                 required: true,
                 schema: new OA\Schema(type: "integer")

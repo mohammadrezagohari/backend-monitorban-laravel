@@ -27,8 +27,19 @@ use Illuminate\Support\Facades\Cache;
 )]
 #[OA\Info(
     version: "1.0.0",
-    description: "Endpoints for user authentication",
-    title: "Authentication"
+    description: "Monitorban REST API documentation",
+    title: "Monitorban API"
+)]
+#[OA\Server(
+    url: "/",
+    description: "Current host"
+)]
+#[OA\SecurityScheme(
+    securityScheme: "bearerAuth",
+    type: "http",
+    description: "Enter JWT token as: Bearer <token>",
+    bearerFormat: "JWT",
+    scheme: "bearer"
 )]
 class AuthController extends Controller
 {

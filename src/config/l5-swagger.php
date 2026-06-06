@@ -19,7 +19,14 @@ return [
                  /*
                  * Absolute paths to directory containing the swagger annotations are stored.
                  */
-                'annotations' => [base_path('Modules/*/Http'),base_path('Modules/*/SwaggerDTO'), base_path('app'),], // اسکن کل ماژول‌ها
+                'annotations' => [
+                    base_path('Modules/*/Http'),
+                    base_path('Modules/*/DTO'),
+                    base_path('Modules/*/DTOs'),
+                    base_path('Modules/*/Data'),
+                    base_path('Modules/*/SwaggerDTO'),
+                    base_path('app'),
+                ],
                 /*
                  * Edit to include full URL in ui for assets
                  */
