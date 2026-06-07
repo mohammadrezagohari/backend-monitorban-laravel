@@ -6,7 +6,11 @@ use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 use OpenApi\Attributes as OA;
 
-#[OA\Schema(schema: "UserLoginDTO")]
+#[OA\Schema(
+    schema: "LoginRequestDTO",
+    required: ["mobile", "password"],
+    type: "object"
+)]
 class LoginValidationDTO extends Data
 {
     #[OA\Property(type: 'string', example: '09123456789')]

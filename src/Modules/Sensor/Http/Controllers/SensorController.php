@@ -3,6 +3,7 @@
 namespace Modules\Sensor\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ApiResponse;
 use Illuminate\Http\Request;
 use Modules\Sensor\Http\Requests\StoreSensorRequest;
 use Modules\Sensor\Http\Requests\UpdateSensorRequest;
@@ -29,11 +30,10 @@ class SensorController extends Controller
     )]
     public function index(Request $request)
     {
-        $sensors = Sensor::with(['serverRoom'])->paginate($request->page);
+        $sensors = Sensor::with(['serverRoom'])
+            ->paginate(ApiResponse::perPage($request->query('per_page')));
 
-        return response()->json([
-            'data' => $sensors
-        ]);
+        return ApiResponse::paginated($sensors);
     }
 
     #[OA\Post(

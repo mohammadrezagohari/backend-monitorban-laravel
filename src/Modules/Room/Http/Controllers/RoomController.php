@@ -3,7 +3,9 @@
 namespace Modules\Room\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ApiResponse;
 use Illuminate\Http\Request;
+use Modules\Room\Models\ServerRoom;
 use OpenApi\Attributes as OA;
 
 #[OA\Tag(
@@ -25,9 +27,13 @@ class RoomController extends Controller
             new OA\Response(response: 401, description: "Unauthenticated"),
         ]
     )]
-    public function index()
+    public function index(Request $request)
     {
-        return view('room::index');
+        $rooms = ServerRoom::query()
+            ->latest()
+            ->paginate(ApiResponse::perPage($request->query('per_page')));
+
+        return ApiResponse::paginated($rooms);
     }
 
     /**
@@ -47,8 +53,9 @@ class RoomController extends Controller
         security: [["bearerAuth" => []]],
         tags: ["Rooms"],
         requestBody: new OA\RequestBody(
-            required: false,
+            required: true,
             content: new OA\JsonContent(
+                required: ["name"],
                 properties: [
                     new OA\Property(property: "name", type: "string", example: "Main server room"),
                 ]
@@ -104,8 +111,9 @@ class RoomController extends Controller
             new OA\Parameter(name: "room", in: "path", required: true, schema: new OA\Schema(type: "integer")),
         ],
         requestBody: new OA\RequestBody(
-            required: false,
+            required: true,
             content: new OA\JsonContent(
+                required: ["name"],
                 properties: [
                     new OA\Property(property: "name", type: "string", example: "Main server room"),
                 ]

@@ -42,10 +42,13 @@
                 "description": "Store a newly created resource in storage.",
                 "operationId": "e2cbd0032a497fb2e481dfe1b8cd1298",
                 "requestBody": {
-                    "required": false,
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "name"
+                                ],
                                 "properties": {
                                     "name": {
                                         "type": "string",
@@ -128,10 +131,13 @@
                     }
                 ],
                 "requestBody": {
-                    "required": false,
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "name"
+                                ],
                                 "properties": {
                                     "name": {
                                         "type": "string",
@@ -805,12 +811,6 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "Login successful"
-                    },
-                    "422": {
-                        "description": "Validation error"
-                    },
                     "200": {
                         "description": "Login successful",
                         "content": {
@@ -821,13 +821,16 @@
                                             "type": "string"
                                         },
                                         "user": {
-                                            "$ref": "#/components/schemas/LoginRequestDTO"
+                                            "$ref": "#/components/schemas/UserResponseDTO"
                                         }
                                     },
                                     "type": "object"
                                 }
                             }
                         }
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 }
             }
@@ -1712,21 +1715,11 @@
                 },
                 "type": "object"
             },
-            "UserLoginDTO": {
-                "properties": {
-                    "mobile": {
-                        "type": "string",
-                        "example": "09123456789"
-                    },
-                    "password": {
-                        "type": "string",
-                        "format": "password",
-                        "example": "password123"
-                    }
-                },
-                "type": "object"
-            },
             "LoginRequestDTO": {
+                "required": [
+                    "mobile",
+                    "password"
+                ],
                 "properties": {
                     "mobile": {
                         "type": "string",
@@ -1845,12 +1838,6 @@
                 "description": "Enter JWT token as: Bearer <token>",
                 "bearerFormat": "JWT",
                 "scheme": "bearer"
-            },
-            "sanctum": {
-                "type": "apiKey",
-                "description": "Enter token in format (Bearer <token>)",
-                "name": "Authorization",
-                "in": "header"
             }
         }
     },

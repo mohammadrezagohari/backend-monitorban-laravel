@@ -3,6 +3,7 @@
 namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\User\DTO\RoleValidationDTO;
@@ -42,11 +43,12 @@ class RoleController extends Controller
             "per_page" => "nullable|numeric"
         ]);
 
-        $perPage = $data["per_page"] ?? 10;
-        $page = $data["page"] ?? 1;
+        $perPage = ApiResponse::perPage($data["per_page"] ?? null);
+        $page = $data["page"] ?? null;
 
-        $permissions = Role::with(relations: ['permissions'])->paginate(perPage: $perPage, page: $page);
-        return response()->json(['data' => $permissions], 200);
+        $roles = Role::with(relations: ['permissions'])->paginate(perPage: $perPage, page: $page);
+
+        return ApiResponse::paginated($roles);
     }
 
 

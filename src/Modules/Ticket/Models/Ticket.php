@@ -13,7 +13,7 @@ use Modules\User\Models\User;
 
 class Ticket extends Model
 {
-    use HasFactory, TracksLastChange;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -25,7 +25,6 @@ class Ticket extends Model
         'recipient',
         'message',
         'status',
-        'last_change_by',
     ];
 
     public function user(): BelongsTo

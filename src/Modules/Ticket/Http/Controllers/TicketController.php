@@ -3,7 +3,9 @@
 namespace Modules\Ticket\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Modules\Ticket\app\Transformers\TicketResource;
 use Modules\Ticket\DTO\TicketRequestData;
 use Modules\Ticket\Models\Ticket;
@@ -25,17 +27,17 @@ class TicketController extends Controller
             new OA\Response(response: 401, description: "Unauthenticated"),
         ]
     )]
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         // Pagination is crucial for APIs
         $tickets = Ticket::where('user_id', auth()->id())
             ->orderByDesc('created_at')
-            ->paginate(10);
+            ->paginate(ApiResponse::perPage($request->query('per_page')));
 
-        return response()->json([
-            'status' => 'success',
-            'data' => TicketResource::collection($tickets)->response()->getData(true)
-        ]);
+        return ApiResponse::paginated(
+            $tickets,
+            TicketResource::collection($tickets)->resolve($request)
+        );
     }
 
     /**

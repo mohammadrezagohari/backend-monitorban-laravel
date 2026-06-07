@@ -3,7 +3,9 @@
 namespace Modules\Ticket\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Modules\Ticket\app\Transformers\FaqResource;
 use Modules\Ticket\Models\Faq;
 use Modules\Ticket\DTO\FaqRequestData;
@@ -37,16 +39,17 @@ class FaqController extends Controller
             new OA\Response(response: 401, description: "Unauthenticated"),
         ]
     )]
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         // Simple logic: If user is logged in, show all?
         // Or just return all for the management table.
-        $faqs = Faq::orderBy('sort_order', 'asc')->get();
+        $faqs = Faq::orderBy('sort_order', 'asc')
+            ->paginate(ApiResponse::perPage($request->query('per_page')));
 
-        return response()->json([
-            'status' => 'success',
-            'data' => FaqResource::collection($faqs)
-        ]);
+        return ApiResponse::paginated(
+            $faqs,
+            FaqResource::collection($faqs)->resolve($request)
+        );
     }
 
     /**

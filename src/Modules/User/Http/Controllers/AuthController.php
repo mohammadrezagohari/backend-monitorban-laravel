@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Modules\User\Models\User;
-use Modules\User\SwaggerDTO\Login\LoginRequestDTO;
 use Modules\User\DTO\LoginValidationDTO;
 use Modules\User\SwaggerDTO\User\UserRequestDTO;
 use Modules\User\SwaggerDTO\User\UserResponseDTO;
@@ -103,16 +102,6 @@ class AuthController extends Controller
 
     }
 
-    #[OA\Response(
-        response: 200,
-        description: "Login successful",
-        content: new OA\JsonContent(
-            properties: [
-                new OA\Property(property: "token", type: "string"),
-                new OA\Property(property: "user", ref: LoginRequestDTO::class),
-            ]
-        )
-    )]
     #[OA\Post(
         path: "/api/v1/auth/login",
         summary: "login user account",
@@ -120,10 +109,19 @@ class AuthController extends Controller
         requestBody: new OA\RequestBody(
             required: true,
             description: "User Login payload",
-            content: new OA\JsonContent(ref: LoginRequestDTO::class),
+            content: new OA\JsonContent(ref: LoginValidationDTO::class),
         ),
         responses: [
-            new OA\Response(response: 201, description: "Login successful"),
+            new OA\Response(
+                response: 200,
+                description: "Login successful",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "token", type: "string"),
+                        new OA\Property(property: "user", ref: UserResponseDTO::class),
+                    ]
+                )
+            ),
             new OA\Response(response: 422, description: "Validation error")
         ]
     )]

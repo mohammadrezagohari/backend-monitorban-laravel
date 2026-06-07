@@ -3,6 +3,7 @@
 namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ApiResponse;
 use Illuminate\Http\Request;
 use Modules\User\Models\User;
 use OpenApi\Attributes as OA;
@@ -27,8 +28,10 @@ class UserController extends Controller
     )]
     public function index(Request $request)
     {
-        $users = User::with(['roles', 'groups'])->paginate($request->page);
-        return response()->json(['data' => $users, 'status' => 200]);
+        $users = User::with(['roles', 'groups'])
+            ->paginate(ApiResponse::perPage($request->query('per_page')));
+
+        return ApiResponse::paginated($users);
     }
 
     #[OA\Post(
