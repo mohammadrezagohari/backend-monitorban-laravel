@@ -3,6 +3,8 @@ namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Room\Models\ServerRoom;
+use Modules\Sensor\Models\Sensor;
 use Modules\User\Models\Group; // مدل Group که ساختیم
 use Spatie\Permission\Models\Permission;
 use OpenApi\Attributes as OA;
@@ -109,7 +111,7 @@ class GroupController extends Controller
 
     public function show($id)
     {
-        $group = Group::with('permissions')->findOrFail($id);
+        $group = Group::with('permissions', 'serverRooms', 'sensors')->findOrFail($id);
 
         return response()->json($group);
     }
@@ -164,6 +166,25 @@ class GroupController extends Controller
         return response()->json([
             'message' => 'Group permissions updated successfully',
             'data' => $group->load('permissions')
+        ]);
+    }
+
+    public function updateResourceAccess(Request $request, $id)
+    {
+        $data = $request->validate([
+            'server_room_ids' => ['array'],
+            'server_room_ids.*' => ['integer', 'exists:server_rooms,id'],
+            'sensor_ids' => ['array'],
+            'sensor_ids.*' => ['integer', 'exists:sensors,id'],
+        ]);
+
+        $group = Group::findOrFail($id);
+        $group->serverRooms()->sync($data['server_room_ids'] ?? []);
+        $group->sensors()->sync($data['sensor_ids'] ?? []);
+
+        return response()->json([
+            'message' => 'Group resource access updated successfully',
+            'data' => $group->load('serverRooms', 'sensors'),
         ]);
     }
 }

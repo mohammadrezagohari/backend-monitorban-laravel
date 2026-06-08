@@ -28,7 +28,7 @@ class UserController extends Controller
     )]
     public function index(Request $request)
     {
-        $users = User::with(['roles', 'groups'])
+        $users = User::with(['roles', 'groups', 'companies'])
             ->paginate(ApiResponse::perPage($request->query('per_page')));
 
         return ApiResponse::paginated($users);
@@ -100,8 +100,9 @@ class UserController extends Controller
     )]
     public function show($id)
     {
-        $user = User::findOrFail($id);
-        return response()->json($user);
+        $user = User::with(['roles', 'groups', 'companies'])->findOrFail($id);
+
+        return response()->json(['status' => 'success', 'data' => $user]);
     }
 
     #[OA\Put(

@@ -2,7 +2,9 @@
 
 namespace Modules\User\Models;
 
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\User\Database\Factories\UserFactoryFactory;
@@ -46,4 +48,13 @@ class User extends Authenticatable implements JWTSubject
         return $this->morphToMany(Group::class, 'model', 'model_has_groups', 'model_id', 'group_id');
     }
 
+    public function companies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class)->withPivot('is_owner')->withTimestamps();
+    }
+
+    public function primaryCompany(): ?Company
+    {
+        return $this->companies()->first();
+    }
 }

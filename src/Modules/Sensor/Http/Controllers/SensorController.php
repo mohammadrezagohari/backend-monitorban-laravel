@@ -11,10 +11,15 @@ use Modules\Sensor\Models\Sensor;
 use Modules\Sensor\Data\SensorData;
 use Modules\Sensor\Data\StoreSensorData;
 use Modules\Sensor\Data\UpdateSensorData;
+use Modules\Sensor\Services\SensorService;
 use OpenApi\Attributes as OA;
 
 class SensorController extends Controller
 {
+    public function __construct(private SensorService $sensors)
+    {
+    }
+
     #[OA\Get(
         path: "/api/v1/sensors",
         summary: "List sensors",
@@ -30,10 +35,9 @@ class SensorController extends Controller
     )]
     public function index(Request $request)
     {
-        $sensors = Sensor::with(['serverRoom'])
-            ->paginate(ApiResponse::perPage($request->query('per_page')));
-
-        return ApiResponse::paginated($sensors);
+        return ApiResponse::paginated(
+            $this->sensors->paginateForRequest($request, ApiResponse::perPage($request->query('per_page')))
+        );
     }
 
     #[OA\Post(
@@ -55,14 +59,7 @@ class SensorController extends Controller
     )]
     public function store(StoreSensorRequest $request)
     {
-        $data = $request->validated();
-
-        if ($request->hasFile('profile_picture')) {
-            $data['profile_picture'] = $request->file('profile_picture')->store('sensors', 'public');
-        }
-
-        $sensor = Sensor::create($data);
-        return response()->json($sensor, 201);
+        return response()->json(['status' => 'success', 'data' => $this->sensors->create($request, $request->validated())], 201);
     }
 
     #[OA\Get(
@@ -83,7 +80,10 @@ class SensorController extends Controller
     )]
     public function show(Sensor $sensor)
     {
-        return $sensor;
+        return response()->json([
+            'status' => 'success',
+            'data' => $this->sensors->findAccessible(request(), $sensor, ['serverRoom', 'sensorType', 'unit', 'threshold', 'latestReading']),
+        ]);
     }
 
     #[OA\Put(
@@ -108,14 +108,7 @@ class SensorController extends Controller
     )]
     public function update(UpdateSensorRequest $request, Sensor $sensor)
     {
-        $data = $request->validated();
-
-        if ($request->hasFile('profile_picture')) {
-            $data['profile_picture'] = $request->file('profile_picture')->store('sensors', 'public');
-        }
-
-        $sensor->update($data);
-        return response()->json($sensor);
+        return response()->json(['status' => 'success', 'data' => $this->sensors->update($request, $sensor, $request->validated())]);
     }
 
     #[OA\Delete(
@@ -132,7 +125,8 @@ class SensorController extends Controller
     )]
     public function destroy(Sensor $sensor)
     {
-        $sensor->delete();
+        $this->sensors->delete(request(), $sensor);
+
         return response()->json(null, 204);
     }
 }

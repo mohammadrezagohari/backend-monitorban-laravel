@@ -3,9 +3,8 @@
 namespace Modules\User\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Modules\User\DTO\RoleDTO;
 use Modules\User\Models\Role;
-;
+use Spatie\Permission\Models\Permission;
 
 class RoleSeeder extends Seeder
 {
@@ -14,21 +13,37 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        
-        $superAdmin = RoleDTO::from([
-            'name' =>  'super-admin',
-        ]);
+        $superAdmin = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'api']);
+        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'api']);
+        $superVisor = Role::firstOrCreate(['name' => 'super-visor', 'guard_name' => 'api']);
+        $user = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'api']);
 
-        $admin = RoleDTO::from([
-            'name' => 'admin',
-        ]);
+        $all = Permission::where('guard_name', 'api')->pluck('name')->all();
 
-        $superVisor = RoleDTO::from([
-            'name' => 'super-visor',
+        $superAdmin->syncPermissions($all);
+        $admin->syncPermissions([
+            'companies.manage',
+            'rooms.view',
+            'rooms.manage',
+            'sensors.view',
+            'sensors.manage',
+            'sensor-types.manage',
+            'units.manage',
+            'thresholds.manage',
+            'sensor-readings.view',
+            'sensor-readings.manage',
+            'dashboard.view',
         ]);
-
-        Role::create($superAdmin->toArray());
-        Role::create($admin->toArray());
-        Role::create($superVisor->toArray());
+        $superVisor->syncPermissions([
+            'rooms.view',
+            'sensors.view',
+            'sensor-readings.view',
+            'dashboard.view',
+        ]);
+        $user->syncPermissions([
+            'rooms.view',
+            'sensors.view',
+            'dashboard.view',
+        ]);
     }
 }

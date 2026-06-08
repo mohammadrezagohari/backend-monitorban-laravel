@@ -36,7 +36,7 @@ use Illuminate\Support\Facades\Cache;
 #[OA\SecurityScheme(
     securityScheme: "bearerAuth",
     type: "http",
-    description: "Enter JWT token as: Bearer <token>",
+    description: "Paste the JWT token only. Swagger UI adds the Bearer prefix automatically.",
     bearerFormat: "JWT",
     scheme: "bearer"
 )]
@@ -78,13 +78,13 @@ class AuthController extends Controller
             $user = new User($userDTO->all());
             $user->save();
 
-            if (Role::where('name', '=', 'user')->count() == 0) {
-                $role = Role::create(['name' => 'user']);
-                $permission = Permission::create(['name' => 'view dashboard']);
+            if (Role::where('name', 'user')->where('guard_name', 'api')->count() === 0) {
+                $role = Role::create(['name' => 'user', 'guard_name' => 'api']);
+                $permission = Permission::firstOrCreate(['name' => 'dashboard.view', 'guard_name' => 'api']);
                 $role->givePermissionTo($permission);
             }
 
-            $user->assignRole(['user']); // نقش پیش‌فرض
+            $user->assignRole(['user']);
             return compact('user');
             // Log::info('User registered successfully', ['token' => $token]);
         });
@@ -105,12 +105,12 @@ class AuthController extends Controller
     #[OA\Post(
         path: "/api/v1/auth/login",
         summary: "login user account",
-        tags: ["Authentication"],
         requestBody: new OA\RequestBody(
-            required: true,
             description: "User Login payload",
+            required: true,
             content: new OA\JsonContent(ref: LoginValidationDTO::class),
         ),
+        tags: ["Authentication"],
         responses: [
             new OA\Response(
                 response: 200,

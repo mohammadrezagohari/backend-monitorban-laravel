@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\User\Http\Controllers\AuthController;
+use Modules\User\Http\Controllers\CompanyController;
 use Modules\User\Http\Controllers\GroupController;
 use Modules\User\Http\Controllers\PermissionController;
 use Modules\User\Http\Controllers\RoleController;
@@ -22,6 +23,9 @@ Route::prefix('v1')->group(function () {
         Route::middleware(['auth:api', 'role:admin,super-admin'])->group(function () {
             Route::get('/dashboard', fn() => response()->json(['message' => 'خوش آمدید ادمین']));
 
+            Route::apiResource('companies', CompanyController::class)->middleware('group.permission:companies.manage');
+            Route::post('companies/{company}/users', [CompanyController::class, 'attachUser'])->middleware('group.permission:companies.manage');
+
             Route::prefix('permissions' ,)->group(function () {
                 Route::post('/', [PermissionController::class, 'store']);
             });
@@ -35,6 +39,7 @@ Route::prefix('v1')->group(function () {
                 Route::post('/', [GroupController::class, 'store']);
                 Route::get('/{id}', [GroupController::class, 'show']);
                 Route::put('/{id}/permissions', [GroupController::class, 'updatePermissions']);
+                Route::put('/{id}/resource-access', [GroupController::class, 'updateResourceAccess']);
             });
         });
 

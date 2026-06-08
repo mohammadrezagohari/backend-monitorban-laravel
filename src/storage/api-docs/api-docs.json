@@ -50,9 +50,22 @@
                                     "name"
                                 ],
                                 "properties": {
+                                    "company_id": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
                                     "name": {
                                         "type": "string",
                                         "example": "Main server room"
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "Floor 2"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Primary server room"
                                     }
                                 },
                                 "type": "object"
@@ -66,6 +79,9 @@
                     },
                     "401": {
                         "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden or user is not assigned to the requested company"
                     },
                     "422": {
                         "description": "Validation error"
@@ -142,6 +158,14 @@
                                     "name": {
                                         "type": "string",
                                         "example": "Main server room"
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "Floor 2"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Primary server room"
                                     }
                                 },
                                 "type": "object"
@@ -1476,167 +1500,112 @@
     "components": {
         "schemas": {
             "SensorData": {
-                "description": "Sensor resource",
+                "description": "Installed sensor resource",
                 "properties": {
                     "id": {
                         "type": "integer",
                         "example": 1
                     },
+                    "company_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
                     "name": {
                         "type": "string",
-                        "example": "Temperature Sensor"
+                        "example": "Temperature Sensor 1"
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "temp-a-01",
+                        "nullable": true
                     },
                     "server_room_id": {
                         "type": "integer",
-                        "example": 3
+                        "example": 1
                     },
-                    "type": {
-                        "type": "string",
-                        "example": "temperature"
-                    },
-                    "title_fa": {
-                        "type": "string",
-                        "example": "سنسور دما"
-                    },
-                    "title_en": {
-                        "type": "string",
-                        "example": "Temperature Sensor"
-                    },
-                    "alert_type": {
-                        "type": "string",
-                        "example": "warning"
-                    },
-                    "physical_address": {
-                        "type": "string",
-                        "example": "0x01",
-                        "nullable": true
-                    },
-                    "unit": {
-                        "type": "string",
-                        "example": "°C",
-                        "nullable": true
-                    },
-                    "alert_interval": {
+                    "sensor_type_id": {
                         "type": "integer",
-                        "example": 10,
-                        "nullable": true
+                        "example": 1
                     },
-                    "alert_count": {
+                    "unit_id": {
                         "type": "integer",
-                        "example": 3,
+                        "example": 1,
                         "nullable": true
                     },
-                    "min_daily_record": {
-                        "type": "integer",
-                        "example": 50,
-                        "nullable": true
-                    },
-                    "recordable_changes": {
-                        "type": "string",
-                        "example": "1-degree change",
-                        "nullable": true
-                    },
-                    "has_critical_history": {
+                    "is_active": {
                         "type": "boolean",
                         "example": true
-                    },
-                    "has_warning_history": {
-                        "type": "boolean",
-                        "example": false
-                    },
-                    "crisis_committee": {
-                        "type": "boolean",
-                        "example": false
-                    },
-                    "icon": {
-                        "type": "string",
-                        "example": "icon.png",
-                        "nullable": true
-                    },
-                    "profile_picture": {
-                        "type": "string",
-                        "example": "profile.jpg",
-                        "nullable": true
                     }
                 },
                 "type": "object"
             },
             "StoreSensorData": {
+                "required": [
+                    "name",
+                    "server_room_id",
+                    "sensor_type_id"
+                ],
                 "properties": {
                     "name": {
                         "type": "string",
-                        "example": "Temp Sensor"
+                        "example": "Temperature Sensor 1"
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "temp-a-01",
+                        "nullable": true
                     },
                     "server_room_id": {
                         "type": "integer",
-                        "example": 2
+                        "example": 1
                     },
-                    "type": {
-                        "type": "string",
-                        "example": "temperature"
+                    "sensor_type_id": {
+                        "type": "integer",
+                        "example": 1
                     },
-                    "title_fa": {
-                        "type": "string",
-                        "example": "سنسور دما"
-                    },
-                    "title_en": {
-                        "type": "string",
-                        "example": "Temperature Sensor"
-                    },
-                    "alert_type": {
-                        "type": "string",
-                        "example": "warning"
+                    "unit_id": {
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
                     },
                     "physical_address": {
                         "type": "string",
                         "example": "0x01",
                         "nullable": true
                     },
-                    "unit": {
-                        "type": "string",
-                        "example": "°C",
-                        "nullable": true
-                    },
-                    "alert_interval": {
-                        "type": "integer",
-                        "example": 10,
-                        "nullable": true
-                    },
-                    "alert_count": {
-                        "type": "integer",
-                        "example": 3,
-                        "nullable": true
-                    },
-                    "min_daily_record": {
-                        "type": "integer",
-                        "example": 50,
-                        "nullable": true
-                    },
-                    "recordable_changes": {
-                        "type": "string",
-                        "example": "1-degree change",
-                        "nullable": true
-                    },
-                    "has_critical_history": {
+                    "is_active": {
                         "type": "boolean",
-                        "example": true
-                    },
-                    "has_warning_history": {
-                        "type": "boolean",
-                        "example": false
-                    },
-                    "crisis_committee": {
-                        "type": "boolean",
-                        "example": false
-                    },
-                    "icon": {
-                        "type": "string",
-                        "example": "icon.png",
+                        "example": true,
                         "nullable": true
                     },
-                    "profile_picture": {
-                        "type": "string",
-                        "format": "binary",
+                    "threshold": {
+                        "properties": {
+                            "normal_min": {
+                                "type": "number",
+                                "example": 10
+                            },
+                            "normal_max": {
+                                "type": "number",
+                                "example": 15
+                            },
+                            "warning_min": {
+                                "type": "number",
+                                "example": 7
+                            },
+                            "warning_max": {
+                                "type": "number",
+                                "example": 18
+                            },
+                            "critical_min": {
+                                "type": "number",
+                                "example": 5
+                            },
+                            "critical_max": {
+                                "type": "number",
+                                "example": 21
+                            }
+                        },
+                        "type": "object",
                         "nullable": true
                     }
                 },
@@ -1835,7 +1804,7 @@
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
-                "description": "Enter JWT token as: Bearer <token>",
+                "description": "Paste the JWT token only. Swagger UI adds the Bearer prefix automatically.",
                 "bearerFormat": "JWT",
                 "scheme": "bearer"
             }
