@@ -19,7 +19,14 @@ return [
                  /*
                  * Absolute paths to directory containing the swagger annotations are stored.
                  */
-                'annotations' => [base_path('Modules/*/Http'),base_path('Modules/*/SwaggerDTO'), base_path('app'),], // اسکن کل ماژول‌ها
+                'annotations' => [
+                    base_path('Modules/*/Http'),
+                    base_path('Modules/*/DTO'),
+                    base_path('Modules/*/DTOs'),
+                    base_path('Modules/*/Data'),
+                    base_path('Modules/*/SwaggerDTO'),
+                    base_path('app'),
+                ],
                 /*
                  * Edit to include full URL in ui for assets
                  */
@@ -71,6 +78,7 @@ return [
              */
             'middleware' => [
                 'api' => [],
+                'jwt.auth' => [],
                 'asset' => [],
                 'docs' => [],
                 'oauth2_callback' => [],
@@ -213,12 +221,6 @@ return [
                         ],
                     ],
                 ],
-                'sanctum' => [ // Unique name of security
-                    'type' => 'apiKey', // Valid values are "basic", "apiKey" or "oauth2".
-                    'description' => 'Enter token in format (Bearer <token>)',
-                    'name' => 'Authorization', // The name of the header or query parameter to be used.
-                    'in' => 'header', // The location of the API key. Valid values are "query" or "header".
-                ],
                 */
             ],
             'security' => [
@@ -279,7 +281,7 @@ return [
          */
         'ui' => [
             'display' => [
-                'dark_mode' => env('L5_SWAGGER_UI_DARK_MODE', false),
+                'dark_mode' => env('L5_SWAGGER_UI_DARK_MODE', true),
                 /*
                  * Controls the default expansion setting for the operations and tags. It can be :
                  * 'list' (expands only the tags),

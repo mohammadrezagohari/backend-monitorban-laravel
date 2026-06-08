@@ -12,6 +12,26 @@ class PermissionDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Permission::create(['name' => 'user.create']);
+        $permissions = [
+            'user.create',
+            'companies.manage',
+            'rooms.view',
+            'rooms.manage',
+            'sensors.view',
+            'sensors.manage',
+            'sensor-types.manage',
+            'units.manage',
+            'thresholds.manage',
+            'sensor-readings.view',
+            'sensor-readings.manage',
+            'dashboard.view',
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'api',
+            ]);
+        }
     }
 }

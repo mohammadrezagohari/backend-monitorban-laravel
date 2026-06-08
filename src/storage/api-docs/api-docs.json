@@ -1,18 +1,800 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Authentication",
-        "description": "Endpoints for user authentication",
+        "title": "Monitorban API",
+        "description": "Monitorban REST API documentation",
         "version": "1.0.0"
     },
+    "servers": [
+        {
+            "url": "/",
+            "description": "Current host"
+        }
+    ],
     "paths": {
-        "/api/auth/register": {
+        "/api/v1/rooms": {
+            "get": {
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "List server rooms",
+                "description": "Display a listing of the resource.",
+                "operationId": "724bfbbff387f72aa00ac8a9c5e8d9aa",
+                "responses": {
+                    "200": {
+                        "description": "Server rooms list"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Create a server room",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "e2cbd0032a497fb2e481dfe1b8cd1298",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "company_id": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Main server room"
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "Floor 2"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Primary server room"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Server room created"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden or user is not assigned to the requested company"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/rooms/{room}": {
+            "get": {
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Show a server room",
+                "description": "Show the specified resource.",
+                "operationId": "bcf1ee58eccd7789197fe25f1492fc4a",
+                "parameters": [
+                    {
+                        "name": "room",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Server room details"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Server room not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Update a server room",
+                "description": "Update the specified resource in storage.",
+                "operationId": "97c0c2ef0bca70b7a9e8a97ff1574e54",
+                "parameters": [
+                    {
+                        "name": "room",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Main server room"
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "Floor 2"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Primary server room"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Server room updated"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Server room not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Delete a server room",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "d80e8529f078aeda2a02a0e0e98af9a2",
+                "parameters": [
+                    {
+                        "name": "room",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Server room deleted"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Server room not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sensors": {
+            "get": {
+                "tags": [
+                    "Sensors"
+                ],
+                "summary": "List sensors",
+                "operationId": "ffe9b4bc7cdaf79939d03a3a11001618",
+                "responses": {
+                    "200": {
+                        "description": "List of sensors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SensorData"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Sensors"
+                ],
+                "summary": "Create sensor",
+                "operationId": "eaa7bde09cc09ba7f54e00e441a2966b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreSensorData"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Sensor created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SensorData"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sensors/{sensor}": {
+            "get": {
+                "tags": [
+                    "Sensors"
+                ],
+                "summary": "Show sensor",
+                "operationId": "bf95671993290a7b06e8fe0dfa66215e",
+                "parameters": [
+                    {
+                        "name": "sensor",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sensor details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SensorData"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Sensors"
+                ],
+                "summary": "Update sensor",
+                "operationId": "24ce27fead79160091ea9735f6210de6",
+                "parameters": [
+                    {
+                        "name": "sensor",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateSensorData"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sensor updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SensorData"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Sensors"
+                ],
+                "summary": "Delete sensor",
+                "operationId": "c44995a2a5357eac203efc5a1e8adf9e",
+                "parameters": [
+                    {
+                        "name": "sensor",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/faq/list": {
+            "get": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "List public FAQs",
+                "description": "READ (List): Get all FAQs.\nUsers usually only see active ones, Admins see all.",
+                "operationId": "459ec31c6c1a7d7189a002ccb3793ea2",
+                "responses": {
+                    "200": {
+                        "description": "FAQ list"
+                    }
+                }
+            }
+        },
+        "/api/v1/faq": {
+            "get": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "List FAQs",
+                "operationId": "9cbb7ade00cd968a2053003964dff374",
+                "responses": {
+                    "200": {
+                        "description": "FAQ list"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/faq/store": {
+            "post": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "Create FAQ",
+                "description": "CREATE: Add a new FAQ.",
+                "operationId": "1a76eb282e2adbf2835023500c2fa408",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FaqRequestData"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "FAQ created successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/faq/{id}": {
+            "get": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "Show public FAQ",
+                "description": "SHOW: Get a single FAQ details.",
+                "operationId": "45c60c204f569178884a14babd7a8aaf",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "FAQ details"
+                    },
+                    "404": {
+                        "description": "FAQ not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/faq/{id}": {
+            "get": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "Show FAQ",
+                "operationId": "32d45108a354e181a45fb0d3d79b7e0b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "FAQ details"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "FAQ not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "Update FAQ",
+                "description": "UPDATE: Edit an FAQ.",
+                "operationId": "4d48fc3285c59c9558012b472d020cf5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FaqRequestData"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "FAQ updated successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "FAQ not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "Delete FAQ",
+                "description": "DELETE: Remove an FAQ.",
+                "operationId": "77f527675bf0339aada41c099ef2d8d0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "FAQ deleted successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "FAQ not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/tickets": {
+            "get": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "List current user's tickets",
+                "operationId": "e99b6c1005d035ce9bdb42b724fc982b",
+                "responses": {
+                    "200": {
+                        "description": "Tickets list"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Create a ticket",
+                "description": "CREATE: Store a new ticket.\nSpatie Data automatically validates the request before entering the method.",
+                "operationId": "18d06b2decb476c92f1f6732ac1a42e7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TicketRequestData"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Ticket created successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/tickets/{ticket}": {
+            "get": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Show a ticket",
+                "description": "SHOW: Get a single ticket details.",
+                "operationId": "4d72436b5700ef75cfb3010c3e84416b",
+                "parameters": [
+                    {
+                        "name": "ticket",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ticket details"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Ticket not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Update a ticket",
+                "description": "UPDATE: Update an existing ticket.",
+                "operationId": "1f372977240ffdf9338282d3f83eca5e",
+                "parameters": [
+                    {
+                        "name": "ticket",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TicketRequestData"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ticket updated successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Ticket not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Delete a ticket",
+                "description": "DELETE: Remove a ticket.",
+                "operationId": "5ca6e5d16207def9685eee30db960f56",
+                "parameters": [
+                    {
+                        "name": "ticket",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ticket deleted successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Ticket not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/register": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Register a new user account",
-                "operationId": "55e2aa3e4318719bd4f66f225e1e159c",
+                "operationId": "cff73fd071f3310eaa857e8674331eaf",
                 "requestBody": {
                     "description": "User registration payload",
                     "required": true,
@@ -34,13 +816,13 @@
                 }
             }
         },
-        "/api/auth/login": {
+        "/api/v1/auth/login": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "login user account",
-                "operationId": "9a5569c3c44cd4e2c43d104510928399",
+                "operationId": "2d4442d06a644df0fb22e8de8a5a93dd",
                 "requestBody": {
                     "description": "User Login payload",
                     "required": true,
@@ -53,12 +835,6 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "Login successful"
-                    },
-                    "422": {
-                        "description": "Validation error"
-                    },
                     "200": {
                         "description": "Login successful",
                         "content": {
@@ -69,24 +845,27 @@
                                             "type": "string"
                                         },
                                         "user": {
-                                            "$ref": "#/components/schemas/LoginRequestDTO"
+                                            "$ref": "#/components/schemas/UserResponseDTO"
                                         }
                                     },
                                     "type": "object"
                                 }
                             }
                         }
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 }
             }
         },
-        "/api/auth/verify-otp": {
+        "/api/v1/auth/verify-otp": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Verify the one-time password (OTP)",
-                "operationId": "99d7dc7005c535c78545e5fcf84d7289",
+                "operationId": "a061564c8d1b9544442483f7d966f510",
                 "requestBody": {
                     "description": "Verify OTP for authentication",
                     "required": true,
@@ -125,13 +904,13 @@
                 }
             }
         },
-        "/api/auth/request-otp": {
+        "/api/v1/auth/request-otp": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Request a one-time password (OTP)",
-                "operationId": "3633b93c46b71423ff3dc6ac41ebb837",
+                "operationId": "bb1076cdaa8505ee7200416db1453eef",
                 "requestBody": {
                     "description": "Request OTP for authentication",
                     "required": true,
@@ -162,13 +941,13 @@
                 }
             }
         },
-        "/api/auth/refresh-token": {
+        "/api/v1/auth/refresh-token": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Refresh the access token using a refresh token",
-                "operationId": "c5f9576575f65627e1f0c2ee15d8febb",
+                "operationId": "f7baa8d2c3baf5fa4cbd70e0e833347b",
                 "requestBody": {
                     "description": "Refresh token details",
                     "required": true,
@@ -222,14 +1001,14 @@
                 }
             }
         },
-        "/api/groups": {
+        "/api/v1/groups": {
             "post": {
                 "tags": [
                     "Group Management"
                 ],
                 "summary": "Create a new group",
                 "description": "Create a new group",
-                "operationId": "68a4a450f6210430233887aab3213b7d",
+                "operationId": "661756229c751aefb1fa7eacfd626c78",
                 "requestBody": {
                     "description": "Details required to create a new group",
                     "required": true,
@@ -269,17 +1048,22 @@
                     "422": {
                         "description": "Validation error"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/api/groups/{id}": {
+        "/api/v1/groups/{id}": {
             "get": {
                 "tags": [
                     "Group Management"
                 ],
                 "summary": "Retrieve a group by ID",
                 "description": "Get a group by ID",
-                "operationId": "ee1715a4f65d84f15d8b1c628068a2a1",
+                "operationId": "e89404a62b1ee2744dafdd7d70b82beb",
                 "parameters": [
                     {
                         "name": "id",
@@ -321,17 +1105,22 @@
                     "404": {
                         "description": "Group not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/api/groups/{id}/permissions": {
+        "/api/v1/groups/{id}/permissions": {
             "put": {
                 "tags": [
                     "Group Management"
                 ],
                 "summary": "Update permissions of a specific group",
                 "description": "Update permissions for a group",
-                "operationId": "25b0514f92b7311c41311f5565ccd96b",
+                "operationId": "6a756e031126249729b4864b58170a03",
                 "parameters": [
                     {
                         "name": "id",
@@ -372,16 +1161,116 @@
                     "422": {
                         "description": "Validation error"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/api/roles": {
+        "/api/v1/permissions": {
+            "post": {
+                "tags": [
+                    "Permissions"
+                ],
+                "summary": "Create a permission",
+                "operationId": "e2e2f60a73b5cd151c79be4c31833f4b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "view dashboard"
+                                    },
+                                    "guard_name": {
+                                        "type": "string",
+                                        "example": "web",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Permission created successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/roles": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "List roles",
+                "operationId": "7271c72b4c6e82e601484680511f9b04",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Roles list"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
             "post": {
                 "tags": [
                     "Roles"
                 ],
                 "summary": "Create a new role",
-                "operationId": "6630954b73937152b182c1cd4ca23bac",
+                "operationId": "e12e417c394e19b5394f1f81b20baf4b",
                 "requestBody": {
                     "description": "Role creation payload",
                     "required": true,
@@ -400,41 +1289,59 @@
                     "422": {
                         "description": "Validation error"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/api/users": {
+        "/api/v1/users": {
             "get": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Get list of users",
-                "operationId": "c023197cbd3afbb49a16608b32149155",
+                "operationId": "c15742b10ad7f62d9671725abe9f5a27",
                 "responses": {
                     "200": {
                         "description": "Successful operation"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Create a new user",
-                "operationId": "a713eb4fbc229fa416316c3b5e1a2d57",
+                "operationId": "b0c4a6775c479c255f8e2e85ba1f17aa",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "name",
-                                    "email",
+                                    "first_name",
+                                    "last_name",
+                                    "mobile",
                                     "password"
                                 ],
                                 "properties": {
-                                    "name": {
+                                    "first_name": {
                                         "type": "string"
+                                    },
+                                    "last_name": {
+                                        "type": "string"
+                                    },
+                                    "mobile": {
+                                        "type": "string",
+                                        "example": "09123456789"
                                     },
                                     "email": {
                                         "type": "string"
@@ -452,19 +1359,24 @@
                     "201": {
                         "description": "User created successfully"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/api/users/{id}": {
+        "/api/v1/users/{user}": {
             "get": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Get a user by ID",
-                "operationId": "bbd5c5451c829ba945101fd2377a5e8f",
+                "operationId": "3f57efc6707b0cbfd47fa29e5526d5b5",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "user",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -476,17 +1388,22 @@
                     "200": {
                         "description": "Successful operation"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Update a user",
-                "operationId": "d1d9e4576ed100a0d5fcfc0a7f325110",
+                "operationId": "c6f072b6a04c426c502612b03051ad89",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "user",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -519,17 +1436,22 @@
                     "200": {
                         "description": "User updated successfully"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Delete a user",
-                "operationId": "9ecb16761c51c12752d64afe39906540",
+                "operationId": "9a84d516770fba6cec4192f4e16788fa",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "user",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -541,13 +1463,232 @@
                     "204": {
                         "description": "User deleted successfully"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/dashboard": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Admin dashboard welcome endpoint",
+                "operationId": "0e85cb3d5af4cbb2394e87b601db1929",
+                "responses": {
+                    "200": {
+                        "description": "Dashboard response"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         }
     },
     "components": {
         "schemas": {
+            "SensorData": {
+                "description": "Installed sensor resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "company_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Temperature Sensor 1"
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "temp-a-01",
+                        "nullable": true
+                    },
+                    "server_room_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "sensor_type_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "unit_id": {
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
+            "StoreSensorData": {
+                "required": [
+                    "name",
+                    "server_room_id",
+                    "sensor_type_id"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Temperature Sensor 1"
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "temp-a-01",
+                        "nullable": true
+                    },
+                    "server_room_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "sensor_type_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "unit_id": {
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "physical_address": {
+                        "type": "string",
+                        "example": "0x01",
+                        "nullable": true
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    },
+                    "threshold": {
+                        "properties": {
+                            "normal_min": {
+                                "type": "number",
+                                "example": 10
+                            },
+                            "normal_max": {
+                                "type": "number",
+                                "example": 15
+                            },
+                            "warning_min": {
+                                "type": "number",
+                                "example": 7
+                            },
+                            "warning_max": {
+                                "type": "number",
+                                "example": 18
+                            },
+                            "critical_min": {
+                                "type": "number",
+                                "example": 5
+                            },
+                            "critical_max": {
+                                "type": "number",
+                                "example": 21
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateSensorData": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/StoreSensorData"
+                    }
+                ]
+            },
+            "FaqRequestData": {
+                "title": "FAQ Request",
+                "description": "FAQ request body data",
+                "required": [
+                    "question",
+                    "answer"
+                ],
+                "properties": {
+                    "question": {
+                        "type": "string",
+                        "example": "How do I reset my password?"
+                    },
+                    "answer": {
+                        "type": "string",
+                        "example": "Use the password reset option on the login page."
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "sort_order": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "TicketRequestData": {
+                "title": "Ticket Request",
+                "description": "Ticket request body data",
+                "required": [
+                    "subject",
+                    "recipient",
+                    "message"
+                ],
+                "properties": {
+                    "subject": {
+                        "title": "Subject",
+                        "type": "string",
+                        "example": "Login Error"
+                    },
+                    "recipient": {
+                        "title": "Recipient",
+                        "type": "string",
+                        "example": "technical"
+                    },
+                    "message": {
+                        "title": "Message",
+                        "type": "string",
+                        "example": "I cannot login to the dashboard."
+                    },
+                    "status": {
+                        "title": "Status",
+                        "description": "Only for updates",
+                        "type": "string",
+                        "enum": [
+                            "open",
+                            "closed"
+                        ],
+                        "example": "open",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "LoginRequestDTO": {
+                "required": [
+                    "mobile",
+                    "password"
+                ],
                 "properties": {
                     "mobile": {
                         "type": "string",
@@ -659,9 +1800,29 @@
                 },
                 "type": "object"
             }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Paste the JWT token only. Swagger UI adds the Bearer prefix automatically.",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
         }
     },
     "tags": [
+        {
+            "name": "Rooms",
+            "description": "Endpoints for managing server rooms"
+        },
+        {
+            "name": "FAQ",
+            "description": "Endpoints for frequently asked questions"
+        },
+        {
+            "name": "Tickets",
+            "description": "Authenticated endpoints for support tickets"
+        },
         {
             "name": "Authentication",
             "description": "Endpoints for user authentication"
@@ -671,12 +1832,24 @@
             "description": "Endpoints for managing groups and their permissions"
         },
         {
+            "name": "Permissions",
+            "description": "Admin endpoints for managing permissions"
+        },
+        {
+            "name": "Roles",
+            "description": "Admin endpoints for managing roles"
+        },
+        {
             "name": "Users",
             "description": "API Endpoints for managing users"
         },
         {
-            "name": "Roles",
-            "description": "Roles"
+            "name": "Dashboard",
+            "description": "Authenticated dashboard endpoints"
+        },
+        {
+            "name": "Sensors",
+            "description": "Sensors"
         }
     ]
 }

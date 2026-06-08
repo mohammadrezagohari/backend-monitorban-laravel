@@ -3,6 +3,7 @@
 namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ApiResponse;
 use Illuminate\Http\Request;
 use Modules\User\Models\User;
 use OpenApi\Attributes as OA;
@@ -14,9 +15,10 @@ use OpenApi\Attributes as OA;
 class UserController extends Controller
 {
     #[OA\Get(
-        path: "/api/users",
-        tags: ["Users"],
+        path: "/api/v1/users",
         summary: "Get list of users",
+        security: [["bearerAuth" => []]],
+        tags: ["Users"],
         responses: [
             new OA\Response(
                 response: 200,
@@ -24,27 +26,32 @@ class UserController extends Controller
             )
         ]
     )]
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
-        return response()->json(['data' => $users, 'status' => 200]);
+        $users = User::with(['roles', 'groups', 'companies'])
+            ->paginate(ApiResponse::perPage($request->query('per_page')));
+
+        return ApiResponse::paginated($users);
     }
 
     #[OA\Post(
-        path: "/api/users",
-        tags: ["Users"],
+        path: "/api/v1/users",
         summary: "Create a new user",
+        security: [["bearerAuth" => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
-                required: ["name", "email", "password"],
+                required: ["first_name", "last_name", "mobile", "password"],
                 properties: [
-                    new OA\Property(property: "name", type: "string"),
+                    new OA\Property(property: "first_name", type: "string"),
+                    new OA\Property(property: "last_name", type: "string"),
+                    new OA\Property(property: "mobile", type: "string", example: "09123456789"),
                     new OA\Property(property: "email", type: "string"),
                     new OA\Property(property: "password", type: "string")
                 ]
             )
         ),
+        tags: ["Users"],
         responses: [
             new OA\Response(
                 response: 201,
@@ -55,14 +62,16 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'mobile' => 'required|string|max:15|unique:users,mobile',
             'password' => 'required|string|min:8',
         ]);
 
         $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'mobile' => $validated['mobile'],
             'password' => bcrypt($validated['password']),
         ]);
 
@@ -70,12 +79,13 @@ class UserController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/users/{id}",
-        tags: ["Users"],
+        path: "/api/v1/users/{user}",
         summary: "Get a user by ID",
+        security: [["bearerAuth" => []]],
+        tags: ["Users"],
         parameters: [
             new OA\Parameter(
-                name: "id",
+                name: "user",
                 in: "path",
                 required: true,
                 schema: new OA\Schema(type: "integer")
@@ -88,20 +98,21 @@ class UserController extends Controller
             )
         ]
     )]
-    
     public function show($id)
     {
-        $user = User::findOrFail($id);
-        return response()->json($user);
+        $user = User::with(['roles', 'groups', 'companies'])->findOrFail($id);
+
+        return response()->json(['status' => 'success', 'data' => $user]);
     }
 
     #[OA\Put(
-        path: "/api/users/{id}",
+        path: "/api/v1/users/{user}",
         tags: ["Users"],
         summary: "Update a user",
+        security: [["bearerAuth" => []]],
         parameters: [
             new OA\Parameter(
-                name: "id",
+                name: "user",
                 in: "path",
                 required: true,
                 schema: new OA\Schema(type: "integer")
@@ -140,12 +151,13 @@ class UserController extends Controller
     }
 
     #[OA\Delete(
-        path: "/api/users/{id}",
+        path: "/api/v1/users/{user}",
         tags: ["Users"],
         summary: "Delete a user",
+        security: [["bearerAuth" => []]],
         parameters: [
             new OA\Parameter(
-                name: "id",
+                name: "user",
                 in: "path",
                 required: true,
                 schema: new OA\Schema(type: "integer")

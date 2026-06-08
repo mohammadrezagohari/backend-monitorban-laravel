@@ -14,6 +14,8 @@ class UpdateSensorRequest extends FormRequest
 
     public function rules()
     {
-        return (new StoreSensorRequest())->rules();
+        return collect((new StoreSensorRequest())->rules())
+            ->map(fn ($rule) => is_string($rule) ? str_replace('required', 'sometimes|required', $rule) : $rule)
+            ->all();
     }
 }

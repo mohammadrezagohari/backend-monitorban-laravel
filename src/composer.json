@@ -65,6 +65,9 @@
         ],
         "pint":[
             "php artisan pint"
+        ],
+        "gen:docs": [
+            "php artisan l5-swagger:generate"
         ]
     },
     "extra": {

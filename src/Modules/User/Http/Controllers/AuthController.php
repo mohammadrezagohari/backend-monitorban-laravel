@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Modules\User\Models\User;
-use Modules\User\SwaggerDTO\Login\LoginRequestDTO;
 use Modules\User\DTO\LoginValidationDTO;
 use Modules\User\SwaggerDTO\User\UserRequestDTO;
 use Modules\User\SwaggerDTO\User\UserResponseDTO;
@@ -26,23 +25,34 @@ use Illuminate\Support\Facades\Cache;
     description: "Endpoints for user authentication"
 )]
 #[OA\Info(
-    title: "Authentication",
     version: "1.0.0",
-    description: "Endpoints for user authentication"
+    description: "Monitorban REST API documentation",
+    title: "Monitorban API"
+)]
+#[OA\Server(
+    url: "/",
+    description: "Current host"
+)]
+#[OA\SecurityScheme(
+    securityScheme: "bearerAuth",
+    type: "http",
+    description: "Paste the JWT token only. Swagger UI adds the Bearer prefix automatically.",
+    bearerFormat: "JWT",
+    scheme: "bearer"
 )]
 class AuthController extends Controller
 {
 
     #[OA\Post(
-        path: "/api/auth/register",
+        path: "/api/v1/auth/register",
         summary: "Register a new user account",
-        tags: ["Authentication"],
-        // accepts: ['application/json'],
         requestBody: new OA\RequestBody(
-            required: true,
             description: "User registration payload",
+            required: true,
             content: new OA\JsonContent(ref: UserRequestDTO::class),
         ),
+        // accepts: ['application/json'],
+        tags: ["Authentication"],
         responses: [
             new OA\Response(response: 201, description: "Registration successful"),
             new OA\Response(response: 422, description: "Validation error")
@@ -68,13 +78,13 @@ class AuthController extends Controller
             $user = new User($userDTO->all());
             $user->save();
 
-            if (Role::where('name', '=', 'user')->count() == 0) {
-                $role = Role::create(['name' => 'user']);
-                $permission = Permission::create(['name' => 'view dashboard']);
+            if (Role::where('name', 'user')->where('guard_name', 'api')->count() === 0) {
+                $role = Role::create(['name' => 'user', 'guard_name' => 'api']);
+                $permission = Permission::firstOrCreate(['name' => 'dashboard.view', 'guard_name' => 'api']);
                 $role->givePermissionTo($permission);
             }
 
-            $user->assignRole(['user']); // نقش پیش‌فرض
+            $user->assignRole(['user']);
             return compact('user');
             // Log::info('User registered successfully', ['token' => $token]);
         });
@@ -92,27 +102,26 @@ class AuthController extends Controller
 
     }
 
-    #[OA\Response(
-        response: 200,
-        description: "Login successful",
-        content: new OA\JsonContent(
-            properties: [
-                new OA\Property(property: "token", type: "string"),
-                new OA\Property(property: "user", ref: LoginRequestDTO::class),
-            ]
-        )
-    )]
     #[OA\Post(
-        path: "/api/auth/login",
+        path: "/api/v1/auth/login",
         summary: "login user account",
-        tags: ["Authentication"],
         requestBody: new OA\RequestBody(
-            required: true,
             description: "User Login payload",
-            content: new OA\JsonContent(ref: LoginRequestDTO::class),
+            required: true,
+            content: new OA\JsonContent(ref: LoginValidationDTO::class),
         ),
+        tags: ["Authentication"],
         responses: [
-            new OA\Response(response: 201, description: "Login successful"),
+            new OA\Response(
+                response: 200,
+                description: "Login successful",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "token", type: "string"),
+                        new OA\Property(property: "user", ref: UserResponseDTO::class),
+                    ]
+                )
+            ),
             new OA\Response(response: 422, description: "Validation error")
         ]
     )]
@@ -145,7 +154,7 @@ class AuthController extends Controller
      * @return JsonResponse
      */
     #[OA\Post(
-        path: "/api/auth/verify-otp",
+        path: "/api/v1/auth/verify-otp",
         summary: "Verify the one-time password (OTP)",
         tags: ["Authentication"],
         requestBody: new OA\RequestBody(
@@ -203,7 +212,7 @@ class AuthController extends Controller
 
 
     #[OA\Post(
-        path: "/api/auth/request-otp",
+        path: "/api/v1/auth/request-otp",
         summary: "Request a one-time password (OTP)",
         tags: ["Authentication"],
         requestBody: new OA\RequestBody(
@@ -245,7 +254,7 @@ class AuthController extends Controller
 
 
     #[OA\Post(
-        path: "/api/auth/refresh-token",
+        path: "/api/v1/auth/refresh-token",
         summary: "Refresh the access token using a refresh token",
         tags: ["Authentication"],
         requestBody: new OA\RequestBody(

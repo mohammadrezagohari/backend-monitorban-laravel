@@ -9,7 +9,7 @@ use Modules\User\Models\Role as RoleModel;
 class RoleValidationDTO extends Data
 {
     public string $name;
-    public ?string $guard_name = 'web';
+    public ?string $guard_name = 'api';
     public array $permissions = [];
 
     public static function rules(ValidationContext $context = null): array
@@ -26,7 +26,7 @@ class RoleValidationDTO extends Data
     {
         return new RoleModel([
             'name'       => $this->name,
-            'guard_name' => $this->guard_name ?? 'web',
+            'guard_name' => $this->guard_name ?? 'api',
         ]);
     }
 

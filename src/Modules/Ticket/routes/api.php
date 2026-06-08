@@ -10,7 +10,7 @@ Route::group(['prefix' => 'faq'], function () {
     Route::get('{id}', [FaqController::class, 'show']);
 });
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
+Route::middleware(['jwt.auth'])->prefix('v1')->group(function () {
     Route::apiResource('tickets', TicketController::class)->names('ticket');
 
     Route::group(['prefix' => 'faq'], function () {
@@ -21,5 +21,4 @@ Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
         Route::delete('{id}', [FaqController::class, 'destroy']);
     });
 });
-
 
