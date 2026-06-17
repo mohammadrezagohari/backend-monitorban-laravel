@@ -484,5 +484,5 @@ php artisan test
 Expected test result:
 
 ```text
-2 passed
+Tests: 7 passed
 ```
