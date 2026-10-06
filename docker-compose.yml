@@ -1,21 +1,33 @@
-version: '3.8'
-
 services:
+  assets:
+    image: docker.arvancloud.ir/node:22-bookworm-slim
+    working_dir: /var/www/src
+    volumes:
+      - ./src:/var/www/src
+      - node_modules:/var/www/src/node_modules
+    command: ["sh", "-c", "npm ci --no-audit --no-fund && npm run build"]
+    networks:
+      - laravel
+
   app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: laravel_app
-    working_dir: /var/www
+    working_dir: /var/www/src
     
     volumes:
       - .:/var/www
+      - node_modules:/var/www/src/node_modules
     ports:
       - "9000:9000"
     networks:
       - laravel
     depends_on:
-      - db
+      db:
+        condition: service_started
+      assets:
+        condition: service_completed_successfully
 
   nginx:
     image: docker.arvancloud.ir/nginx:alpine
@@ -51,3 +63,4 @@ networks:
 
 volumes:
   dbdata:
+  node_modules:

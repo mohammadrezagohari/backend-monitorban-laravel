@@ -2,11 +2,11 @@
 FROM docker.arvancloud.ir/php:8.2-fpm
 
 # Install Node.js (for Laravel Mix/Vite)
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs
 
 # Set working directory
-WORKDIR /var/www
+WORKDIR /var/www/src
 
 RUN apt-get update && apt-get install -y \
     libpq-dev \

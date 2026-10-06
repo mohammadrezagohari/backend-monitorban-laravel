@@ -90,6 +90,40 @@ Key ideas:
 
 ## Setup
 
+### Docker
+
+Run these commands from the repository root. Laravel lives in `src/`,
+and the app container's working directory is `/var/www/src`.
+
+Create `src/.env` from `src/.env.example` if it does not exist. Set
+`DB_CONNECTION=pgsql`, `DB_HOST=db`, `DB_PORT=5432`, and use `laravel`
+for the database name, username, and password.
+
+```bash
+docker compose up -d --build
+docker compose exec app composer install
+docker compose exec app php artisan key:generate
+docker compose exec app php artisan migrate
+```
+
+Generate the application key only for a new environment with an empty key.
+Open `http://localhost`; `http://localhost/up` is the Laravel health endpoint.
+
+`docker compose up -d` also runs the `assets` service with Node 22 to install
+the locked npm dependencies and run `npm run build` before starting the app.
+Build output is shared with Nginx in `src/public/build`; npm dependencies
+stay in a Docker volume. The assets container exits with code 0 after a
+successful build. Inspect failures with `docker compose logs assets`.
+Swagger UI is available at `http://localhost/api/documentation`.
+The app image also uses Node 22 and shares the Linux npm dependencies with
+the assets service, so `docker compose exec app npm run build` works too.
+After changing the Dockerfile, rebuild and recreate the app with
+`docker compose up -d --build` to apply the new Node version.
+
+### Without Docker
+
+Run the following commands from `src/`.
+
 Install dependencies:
 
 ```bash
