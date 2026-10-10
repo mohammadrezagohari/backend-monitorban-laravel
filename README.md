@@ -100,13 +100,17 @@ Create `src/.env` from `src/.env.example` if it does not exist. Set
 for the database name, username, and password.
 
 ```bash
-docker compose up -d --build
-docker compose exec app composer install
-docker compose exec app php artisan key:generate
-docker compose exec app php artisan migrate
+docker compose build app
+docker compose run --rm --no-deps app composer install
+docker compose run --rm --no-deps app php artisan key:generate
+docker compose up -d
 ```
 
 Generate the application key only for a new environment with an empty key.
+The app waits for PostgreSQL readiness, then runs pending migrations before
+starting PHP-FPM. Existing data is preserved; migrations run again on restart
+only when there are pending changes. Do not use `docker compose down -v`
+unless you intend to delete the database volume.
 Open `http://localhost`; `http://localhost/up` is the Laravel health endpoint.
 
 `docker compose up -d` also runs the `assets` service with Node 22 to install

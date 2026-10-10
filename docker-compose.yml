@@ -15,7 +15,7 @@ services:
       dockerfile: Dockerfile
     container_name: laravel_app
     working_dir: /var/www/src
-    
+    command: ["sh", "-c", "php artisan migrate --force && exec php-fpm"]
     volumes:
       - .:/var/www
       - node_modules:/var/www/src/node_modules
@@ -25,7 +25,7 @@ services:
       - laravel
     depends_on:
       db:
-        condition: service_started
+        condition: service_healthy
       assets:
         condition: service_completed_successfully
 
@@ -46,6 +46,11 @@ services:
     image: docker.arvancloud.ir/postgres:15.2-alpine
     container_name: laravel_db
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U laravel -d laravel"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
     environment:
       POSTGRES_USER: laravel
       POSTGRES_PASSWORD: laravel
